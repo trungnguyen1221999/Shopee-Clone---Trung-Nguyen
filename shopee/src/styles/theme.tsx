@@ -3,6 +3,7 @@ export interface themePropsType {
     primary: string;
     text: string;
     background: string;
+    footer: string;
   };
   fonts: {
     main: string;
@@ -18,11 +19,12 @@ export interface themePropsType {
   };
 }
 
-const theme = {
+const theme: themePropsType = {
   colors: {
     primary: "#ee4d2d",
     text: "#000000",
     background: "#ffffff",
+    footer: "f5f5f5",
   },
   fonts: {
     main: `'Roboto', Arial, sans-serif`,
