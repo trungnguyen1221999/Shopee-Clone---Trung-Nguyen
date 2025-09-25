@@ -39,4 +39,5 @@ const LoginText = styled.h1`
 const StyledLink = styled.a`
   color: ${({ theme }) => theme.colors.primary};
   font-size: ${({ theme }) => theme.fontSizes.medium};
+  cursor: pointer;
 `;
