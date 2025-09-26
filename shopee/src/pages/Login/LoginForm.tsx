@@ -1,0 +1,139 @@
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+
+const LoginForm = () => {
+  return (
+    <Wrap>
+      <Form>
+        <Title>Log In</Title>
+        <Input type="text" placeholder="Phone number / Username / Email" />
+        <Input type="password" placeholder="Password" />
+        <Button>Log in</Button>
+        <ForgotPassword to="/">Forgot Password?</ForgotPassword>
+
+        <Divider>OR</Divider>
+
+        <SocialButtons>
+          <SocialButton bg="#3b5998">Facebook</SocialButton>
+          <SocialButton bg="#db4437">Google</SocialButton>
+        </SocialButtons>
+
+        <RegisterBox>
+          <p>
+            New to Shopee?
+            <RegisterLink to="/register">Sign Up</RegisterLink>
+          </p>
+        </RegisterBox>
+      </Form>
+    </Wrap>
+  );
+};
+
+export default LoginForm;
+
+// Wrap container: căn giữa form trong container cha
+const Wrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 3rem;
+  border-radius: 1rem;
+  width: 50rem;
+`;
+
+// Form chính
+const Form = styled.form`
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  padding: 3rem 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+`;
+
+const Title = styled.h2`
+  font-size: ${({ theme }) => theme.fontSizes.large};
+  font-weight: 400;
+`;
+
+const Input = styled.input`
+  padding: 1rem;
+  border: 1px solid #bdbdbd;
+  border-radius: 0.4rem;
+  font-size: ${({ theme }) => theme.fontSizes.medium};
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  &::placeholder {
+    color: #bdbdbd;
+    opacity: 1;
+  }
+`;
+
+const Button = styled.button`
+  padding: 1rem;
+  font-size: ${({ theme }) => theme.fontSizes.medium};
+  font-weight: 500;
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: #fff;
+  border: none;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  &:hover {
+    opacity: 0.9;
+  }
+`;
+
+const ForgotPassword = styled(Link)`
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  color: ${({ theme }) => theme.colors.primary};
+  text-align: right;
+`;
+
+const Divider = styled.div`
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #999;
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+  }
+  &::before {
+    margin-right: 0.8rem;
+  }
+  &::after {
+    margin-left: 0.8rem;
+  }
+`;
+
+const SocialButtons = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+`;
+
+const SocialButton = styled(Button)<{ bg: string }>`
+  background-color: ${({ bg }) => bg};
+`;
+
+const RegisterBox = styled.div`
+  text-align: center;
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  p {
+    color: #bdbdbd;
+  }
+`;
+
+const RegisterLink = styled(Link)`
+  margin-left: 0.5rem;
+  color: ${({ theme }) => theme.colors.primary};
+  font-weight: 500;
+`;
