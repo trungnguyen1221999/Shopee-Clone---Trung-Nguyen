@@ -38,19 +38,17 @@ const rules: RuleTypes = {
       value: 30,
       message: "Password must be at least 8 characters and max 30 characters",
     },
+    pattern: {
+      value:
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-[\]{};':"\\|,.<>/?]).+$/,
+      message:
+        "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character",
+    },
   },
   confirmation_password: (getPassword) => ({
     required: {
       value: true,
-      message: "Password is required",
-    },
-    minLength: {
-      value: 8,
-      message: "Password must be at least 8 characters and max 30 characters",
-    },
-    maxLength: {
-      value: 300,
-      message: "Password must be at least 8 characters and max 30 characters",
+      message: "Confirmation Password is required",
     },
     validate: (value: string) =>
       value === getPassword() || "Passwords do not match",
