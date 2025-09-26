@@ -220,7 +220,7 @@ const ErrorMessage = styled.div`
   font-size: ${({ theme }) => theme.fontSizes.small};
   color: red;
   margin-top: 0.4rem;
-  height: 1.2rem; /* giữ khoảng trống dù không có lỗi */
+  min-height: 0.8rem;
 `;
 const InputWrapper = styled.div`
   display: flex;
