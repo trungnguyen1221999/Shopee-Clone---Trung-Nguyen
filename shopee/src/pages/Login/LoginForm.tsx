@@ -60,7 +60,7 @@ const Form = styled.form`
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 1.8rem;
+  gap: 1rem;
 `;
 
 const Title = styled.h2`
@@ -92,7 +92,7 @@ const ErrorMessage = styled.div`
   font-size: ${({ theme }) => theme.fontSizes.small};
   color: red;
   margin-top: 0.4rem;
-  min-height: 1.2rem;
+  height: 1.2rem;
 `;
 
 const Button = styled.button`

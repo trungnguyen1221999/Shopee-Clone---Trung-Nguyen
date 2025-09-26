@@ -1,44 +1,32 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-
+import rules from "../../untils/rules";
+interface DataType {
+  email: string;
+  password: string;
+  confirmation_password: string;
+}
 const SigupForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  const onSubmit = (data: any) => console.log(data);
+  } = useForm<DataType>();
+  const onSubmit = handleSubmit((data) => {
+    // console.log(data);
+  });
   console.log("error", errors);
   return (
     <Wrap>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={onSubmit}>
         <Title>Sign Up</Title>
 
         <InputWrapper>
           <Input
             type="text"
             placeholder="Email"
-            {...register("email", {
-              required: {
-                value: true,
-                message: "Email is required",
-              },
-              minLength: {
-                value: 5,
-                message:
-                  "Email must be at least 5 characters and max 100 characters",
-              },
-              maxLength: {
-                value: 100,
-                message:
-                  "Email must be at least 5 characters and max 100 characters",
-              },
-              pattern: {
-                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                message: "Invalid email address",
-              },
-            })}
+            {...register("email", rules.email)}
           />
           <ErrorMessage>{errors.email?.message}</ErrorMessage>
         </InputWrapper>
@@ -47,22 +35,23 @@ const SigupForm = () => {
           <Input
             type="password"
             placeholder="Password"
-            {...register("password")}
+            {...register("password", rules.password)}
           />
 
-          <ErrorMessage></ErrorMessage>
+          <ErrorMessage>{errors.password?.message}</ErrorMessage>
         </InputWrapper>
 
         <InputWrapper>
           <Input
             type="password"
             placeholder="Confirmation Password"
-            {...register("confirmation_password")}
+            {...register("confirmation_password", rules.confirmation_password)}
           />
-          <ErrorMessage></ErrorMessage>
+          <ErrorMessage>{errors.confirmation_password?.message}</ErrorMessage>
         </InputWrapper>
 
         <Button type="submit">Sign up</Button>
+        <ForgotPassword to="/">Forgot Password?</ForgotPassword>
 
         <Divider>OR</Divider>
 
@@ -110,7 +99,7 @@ const Form = styled.form`
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 1.8rem;
+  gap: 1rem;
 `;
 
 const Title = styled.h2`
@@ -227,7 +216,7 @@ const ErrorMessage = styled.div`
   font-size: ${({ theme }) => theme.fontSizes.small};
   color: red;
   margin-top: 0.4rem;
-  min-height: 1.2rem; /* giữ khoảng trống dù không có lỗi */
+  height: 1.2rem; /* giữ khoảng trống dù không có lỗi */
 `;
 const InputWrapper = styled.div`
   display: flex;
