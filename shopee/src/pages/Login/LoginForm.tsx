@@ -6,8 +6,17 @@ const LoginForm = () => {
     <Wrap>
       <Form>
         <Title>Log In</Title>
-        <Input type="text" placeholder="Phone number / Username / Email" />
-        <Input type="password" placeholder="Password" />
+
+        <InputWrapper>
+          <Input type="text" placeholder="Phone number / Username / Email" />
+          <ErrorMessage>{/* errors.username */}</ErrorMessage>
+        </InputWrapper>
+
+        <InputWrapper>
+          <Input type="password" placeholder="Password" />
+          <ErrorMessage>{/* errors.password */}</ErrorMessage>
+        </InputWrapper>
+
         <Button>Log in</Button>
         <ForgotPassword to="/">Forgot Password?</ForgotPassword>
 
@@ -31,7 +40,8 @@ const LoginForm = () => {
 
 export default LoginForm;
 
-// Wrap container: căn giữa form trong container cha
+// Styled Components
+
 const Wrap = styled.div`
   display: flex;
   justify-content: center;
@@ -41,10 +51,9 @@ const Wrap = styled.div`
   width: 50rem;
 `;
 
-// Form chính
 const Form = styled.form`
   width: 100%;
-  height: 100%;
+  max-width: 40rem;
   background-color: #fff;
   padding: 3rem 2rem;
   border-radius: 1rem;
@@ -57,6 +66,11 @@ const Form = styled.form`
 const Title = styled.h2`
   font-size: ${({ theme }) => theme.fontSizes.large};
   font-weight: 400;
+`;
+
+const InputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const Input = styled.input`
@@ -72,6 +86,13 @@ const Input = styled.input`
     color: #bdbdbd;
     opacity: 1;
   }
+`;
+
+const ErrorMessage = styled.div`
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  color: red;
+  margin-top: 0.4rem;
+  min-height: 1.2rem;
 `;
 
 const Button = styled.button`

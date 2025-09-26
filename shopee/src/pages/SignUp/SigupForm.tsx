@@ -1,15 +1,39 @@
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const SigupForm = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data: any) => console.log(data);
   return (
     <Wrap>
-      <Form>
+      <Form onSubmit={onSubmit}>
         <Title>Sign Up</Title>
-        <Input type="text" placeholder="Phone number / Username / Email" />
-        <Input type="password" placeholder="Password" />
-        <Input type="password" placeholder="Confirmation Password" />
-        <Button>Sign up</Button>
+
+        <InputWrapper>
+          <Input
+            type="text"
+            placeholder="Phone number / Username / Email"
+            {...register("email")}
+          />
+          <ErrorMessage></ErrorMessage>
+        </InputWrapper>
+
+        <InputWrapper>
+          <Input type="password" placeholder="Password" />
+          <ErrorMessage></ErrorMessage>
+        </InputWrapper>
+
+        <InputWrapper>
+          <Input type="password" placeholder="Confirmation Password" />
+          <ErrorMessage></ErrorMessage>
+        </InputWrapper>
+
+        <Button type="submit">Sign up</Button>
 
         <Divider>OR</Divider>
 
@@ -43,7 +67,7 @@ const Wrap = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 4rem 3rem;
+  padding: 0 3rem;
   border-radius: 1rem;
   width: 50rem;
 `;
@@ -51,7 +75,6 @@ const Wrap = styled.div`
 // Form chính
 const Form = styled.form`
   width: 100%;
-  height: 100%;
   background-color: #fff;
   padding: 3rem 2rem;
   border-radius: 1rem;
@@ -170,4 +193,14 @@ const Agreement = styled.div`
       margin-left: 0.2rem;
     }
   }
+`;
+const ErrorMessage = styled.div`
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  color: red;
+  margin-top: 0.4rem;
+  min-height: 1.2rem; /* giữ khoảng trống dù không có lỗi */
+`;
+const InputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
