@@ -9,27 +9,56 @@ const SigupForm = () => {
     formState: { errors },
   } = useForm();
   const onSubmit = (data: any) => console.log(data);
+  console.log("error", errors);
   return (
     <Wrap>
-      <Form onSubmit={onSubmit}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <Title>Sign Up</Title>
 
         <InputWrapper>
           <Input
             type="text"
-            placeholder="Phone number / Username / Email"
-            {...register("email")}
+            placeholder="Email"
+            {...register("email", {
+              required: {
+                value: true,
+                message: "Email is required",
+              },
+              minLength: {
+                value: 5,
+                message:
+                  "Email must be at least 5 characters and max 100 characters",
+              },
+              maxLength: {
+                value: 100,
+                message:
+                  "Email must be at least 5 characters and max 100 characters",
+              },
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: "Invalid email address",
+              },
+            })}
           />
+          <ErrorMessage>{errors.email?.message}</ErrorMessage>
+        </InputWrapper>
+
+        <InputWrapper>
+          <Input
+            type="password"
+            placeholder="Password"
+            {...register("password")}
+          />
+
           <ErrorMessage></ErrorMessage>
         </InputWrapper>
 
         <InputWrapper>
-          <Input type="password" placeholder="Password" />
-          <ErrorMessage></ErrorMessage>
-        </InputWrapper>
-
-        <InputWrapper>
-          <Input type="password" placeholder="Confirmation Password" />
+          <Input
+            type="password"
+            placeholder="Confirmation Password"
+            {...register("confirmation_password")}
+          />
           <ErrorMessage></ErrorMessage>
         </InputWrapper>
 
