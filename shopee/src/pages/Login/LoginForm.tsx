@@ -13,7 +13,7 @@ const LoginForm = () => {
         </InputWrapper>
 
         <InputWrapper>
-          <Input type="password" placeholder="Password" />
+          <Input type="password" placeholder="Password" autoComplete="on" />
           <ErrorMessage>{/* errors.password */}</ErrorMessage>
         </InputWrapper>
 

@@ -11,12 +11,13 @@ const SigupForm = () => {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<DataType>();
   const onSubmit = handleSubmit((data) => {
     // console.log(data);
   });
-  console.log("error", errors);
+  const getPassword = () => getValues("password");
   return (
     <Wrap>
       <Form onSubmit={onSubmit}>
@@ -45,7 +46,10 @@ const SigupForm = () => {
           <Input
             type="password"
             placeholder="Confirmation Password"
-            {...register("confirmation_password", rules.confirmation_password)}
+            {...register(
+              "confirmation_password",
+              rules.confirmation_password(getPassword)
+            )}
           />
           <ErrorMessage>{errors.confirmation_password?.message}</ErrorMessage>
         </InputWrapper>

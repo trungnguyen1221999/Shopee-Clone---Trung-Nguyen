@@ -3,7 +3,7 @@ import type { RegisterOptions } from "react-hook-form";
 interface RuleTypes {
   email: RegisterOptions;
   password: RegisterOptions;
-  confirmation_password: RegisterOptions;
+  confirmation_password: (getPassword: () => string) => RegisterOptions;
 }
 
 const rules: RuleTypes = {
@@ -39,7 +39,7 @@ const rules: RuleTypes = {
       message: "Password must be at least 8 characters and max 30 characters",
     },
   },
-  confirmation_password: {
+  confirmation_password: (getPassword) => ({
     required: {
       value: true,
       message: "Password is required",
@@ -52,7 +52,9 @@ const rules: RuleTypes = {
       value: 300,
       message: "Password must be at least 8 characters and max 30 characters",
     },
-  },
+    validate: (value: string) =>
+      value === getPassword() || "Passwords do not match",
+  }),
 };
 
 export default rules;
