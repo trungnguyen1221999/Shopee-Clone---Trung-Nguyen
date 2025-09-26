@@ -56,3 +56,13 @@ const rules: RuleTypes = {
 };
 
 export default rules;
+
+interface LoginRulesTypes {
+  email: RegisterOptions;
+  password: RegisterOptions;
+}
+
+export const LoginRules: LoginRulesTypes = {
+  email: rules.email,
+  password: rules.password,
+};

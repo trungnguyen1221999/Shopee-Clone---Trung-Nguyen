@@ -1,20 +1,42 @@
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { LoginRules } from "../../untils/rules";
+
+interface LoginFormProps {
+  email: string;
+  password: string;
+}
 
 const LoginForm = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormProps>();
+  const onSubmit = handleSubmit((data: LoginFormProps) => {});
   return (
     <Wrap>
-      <Form>
+      <Form onSubmit={onSubmit}>
         <Title>Log In</Title>
 
         <InputWrapper>
-          <Input type="text" placeholder="Phone number / Username / Email" />
-          <ErrorMessage>{/* errors.username */}</ErrorMessage>
+          <Input
+            type="text"
+            placeholder="Email"
+            {...register("email", LoginRules.email)}
+          />
+          <ErrorMessage>{errors.email?.message}</ErrorMessage>
         </InputWrapper>
 
         <InputWrapper>
-          <Input type="password" placeholder="Password" autoComplete="on" />
-          <ErrorMessage>{/* errors.password */}</ErrorMessage>
+          <Input
+            type="password"
+            placeholder="Password"
+            autoComplete="on"
+            {...register("password", LoginRules.password)}
+          />
+          <ErrorMessage>{errors.password?.message}</ErrorMessage>
         </InputWrapper>
 
         <Button>Log in</Button>
