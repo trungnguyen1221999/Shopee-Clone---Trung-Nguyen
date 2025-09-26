@@ -3,12 +3,7 @@ interface LoginPropType {
 }
 
 const LoginLayout = ({ children }: LoginPropType) => {
-  return (
-    <div>
-      LoginLayout
-      {children}
-    </div>
-  );
+  return <div>{children}</div>;
 };
 
 export default LoginLayout;
