@@ -1,19 +1,18 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { LoginSchema, type LoginSchemaType } from "../../untils/rules";
 // import { LoginRules } from "../../untils/rules";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-interface LoginFormProps {
-  email: string;
-  password: string;
-}
+type LoginFormProps = LoginSchemaType;
 
 const LoginForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormProps>();
+  } = useForm<LoginFormProps>({ resolver: yupResolver(LoginSchema) });
   const onSubmit = handleSubmit((data: LoginFormProps) => {});
   return (
     <Wrap>
@@ -21,11 +20,7 @@ const LoginForm = () => {
         <Title>Log In</Title>
 
         <InputWrapper>
-          <Input
-            type="text"
-            placeholder="Email"
-            {...register("email", LoginRules.email)}
-          />
+          <Input type="text" placeholder="Email" {...register("email")} />
           <ErrorMessage>{errors.email?.message}</ErrorMessage>
         </InputWrapper>
 
@@ -34,7 +29,7 @@ const LoginForm = () => {
             type="password"
             placeholder="Password"
             autoComplete="on"
-            {...register("password", LoginRules.password)}
+            {...register("password")}
           />
           <ErrorMessage>{errors.password?.message}</ErrorMessage>
         </InputWrapper>
