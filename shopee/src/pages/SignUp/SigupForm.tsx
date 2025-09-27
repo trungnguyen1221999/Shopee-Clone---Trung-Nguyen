@@ -1,34 +1,30 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import rules from "../../untils/rules";
-interface DataType {
-  email: string;
-  password: string;
-  confirmation_password: string;
-}
+import { yupResolver } from "@hookform/resolvers/yup";
+
+// import { yupResolver } from "./../../../node_modules/@hookform/resolvers/yup/src/yup";
+import { RegisterSchema, type RegisterSchemaType } from "../../untils/rules";
+
+type DataType = RegisterSchemaType;
 const SigupForm = () => {
   const {
     register,
     handleSubmit,
-    getValues,
+    // getValues,
     formState: { errors },
-  } = useForm<DataType>();
-  const onSubmit = handleSubmit((data) => {
+  } = useForm<DataType>({ resolver: yupResolver(RegisterSchema) });
+  const onSubmit = (data) => {
     // console.log(data);
-  });
-  const getPassword = () => getValues("password");
+  };
+  // const getPassword = () => getValues("password");
   return (
     <Wrap>
-      <Form onSubmit={onSubmit}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <Title>Sign Up</Title>
 
         <InputWrapper>
-          <Input
-            type="text"
-            placeholder="Email"
-            {...register("email", rules.email)}
-          />
+          <Input type="text" placeholder="Email" {...register("email")} />
           <ErrorMessage>{errors.email?.message}</ErrorMessage>
         </InputWrapper>
 
@@ -36,7 +32,7 @@ const SigupForm = () => {
           <Input
             type="password"
             placeholder="Password"
-            {...register("password", rules.password)}
+            {...register("password")}
           />
 
           <ErrorMessage>{errors.password?.message}</ErrorMessage>
@@ -46,10 +42,7 @@ const SigupForm = () => {
           <Input
             type="password"
             placeholder="Confirmation Password"
-            {...register(
-              "confirmation_password",
-              rules.confirmation_password(getPassword)
-            )}
+            {...register("confirmation_password")}
           />
           <ErrorMessage>{errors.confirmation_password?.message}</ErrorMessage>
         </InputWrapper>

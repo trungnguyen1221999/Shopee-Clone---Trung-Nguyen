@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { LoginRules } from "../../untils/rules";
+// import { LoginRules } from "../../untils/rules";
 
 interface LoginFormProps {
   email: string;
