@@ -4,7 +4,6 @@ import theme from "./styles/theme";
 import { GlobalStyle } from "./styles/GlobalStyle";
 import useRoutesNav from "./useRoutesNav";
 import Footer from "./components/Footer";
-
 function App() {
   const NavLinks = useRoutesNav();
   return (
