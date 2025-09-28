@@ -5,6 +5,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 // import { yupResolver } from "./../../../node_modules/@hookform/resolvers/yup/src/yup";
 import { RegisterSchema, type RegisterSchemaType } from "../../untils/rules";
+import { useMutation } from "@tanstack/react-query";
+import { registerApi } from "../../apis/register.api";
+import { omit } from "lodash";
 
 type DataType = RegisterSchemaType;
 const SigupForm = () => {
@@ -14,8 +17,22 @@ const SigupForm = () => {
     // getValues,
     formState: { errors },
   } = useForm<DataType>({ resolver: yupResolver(RegisterSchema) });
-  const onSubmit = (data) => {
-    // console.log(data);
+
+  const registerMutation = useMutation({
+    mutationFn: (body: Omit<DataType, "confirmation_password">) => {
+      return registerApi(body);
+    },
+  });
+  const onSubmit = (data: DataType) => {
+    const body = omit(data, ["confirmation_password"]);
+    registerMutation.mutate(body, {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
   };
   // const getPassword = () => getValues("password");
   return (
