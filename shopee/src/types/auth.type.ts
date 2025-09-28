@@ -8,3 +8,14 @@ export type AuthResponse = ResponseApi<{
   expires_refresh_token: string;
   user: User;
 }>;
+
+export type ErrorResponse = {
+  status: number;
+  response: {
+    data?: {
+      data?: {
+        email?: string;
+      };
+    };
+  };
+};

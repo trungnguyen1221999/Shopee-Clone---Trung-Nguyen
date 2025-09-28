@@ -8,6 +8,7 @@ import { RegisterSchema, type RegisterSchemaType } from "../../untils/rules";
 import { useMutation } from "@tanstack/react-query";
 import { registerApi } from "../../apis/register.api";
 import { omit } from "lodash";
+import type { ErrorResponse } from "../../types/auth.type";
 
 type DataType = RegisterSchemaType;
 const SigupForm = () => {
@@ -15,6 +16,7 @@ const SigupForm = () => {
     register,
     handleSubmit,
     // getValues,
+    setError,
     formState: { errors },
   } = useForm<DataType>({ resolver: yupResolver(RegisterSchema) });
 
@@ -30,7 +32,21 @@ const SigupForm = () => {
         console.log(data);
       },
       onError: (error) => {
-        console.log(error);
+        // const err = error as unknown as ErrorResponse;
+        // if (err.status === 422) {
+        //   return setError("email", {
+        //     message: err.response?.data?.data?.email,
+        //   });
+        // }
+        const formError = (error as unknown as ErrorResponse).response?.data
+          ?.data;
+        if ((error as unknown as ErrorResponse).status === 422 && formError) {
+          Object.keys(formError).forEach((key) => {
+            setError(key as keyof DataType, {
+              message: formError[key as keyof typeof formError],
+            });
+          });
+        }
       },
     });
   };
