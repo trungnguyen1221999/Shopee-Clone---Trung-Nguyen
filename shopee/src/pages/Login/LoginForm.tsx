@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { LoginSchema, type LoginSchemaType } from "../../untils/rules";
 // import { LoginRules } from "../../untils/rules";
@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 type LoginFormProps = LoginSchemaType;
 
 const LoginForm = () => {
+  const toHomePage = useNavigate();
   const {
     register,
     handleSubmit,
@@ -31,6 +32,7 @@ const LoginForm = () => {
         onSuccess: (data) => {
           console.log(data);
           toast.success("Login successful!");
+          toHomePage("/");
         },
         onError: (error) => {
           const axiosError = error as { response?: { data?: any } };

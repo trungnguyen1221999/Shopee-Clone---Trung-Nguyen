@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -13,6 +13,8 @@ import { toast } from "react-toastify";
 
 type DataType = RegisterSchemaType;
 const SigupForm = () => {
+  const toHomePage = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -32,6 +34,7 @@ const SigupForm = () => {
       onSuccess: (data) => {
         console.log(data);
         toast.success("Register successful!");
+        toHomePage("/");
       },
       onError: (error) => {
         // const err = error as unknown as ErrorResponse;
