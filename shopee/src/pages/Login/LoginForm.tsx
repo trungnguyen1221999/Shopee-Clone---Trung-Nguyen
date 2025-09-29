@@ -4,7 +4,10 @@ import styled from "styled-components";
 import { LoginSchema, type LoginSchemaType } from "../../untils/rules";
 // import { LoginRules } from "../../untils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
-
+import { useMutation } from "@tanstack/react-query";
+import { LoginApi } from "../../apis/login.api";
+import { omit } from "lodash";
+import { toast } from "react-toastify";
 type LoginFormProps = LoginSchemaType;
 
 const LoginForm = () => {
@@ -12,8 +15,37 @@ const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<LoginFormProps>({ resolver: yupResolver(LoginSchema) });
-  const onSubmit = handleSubmit((data: LoginFormProps) => {});
+
+  const loginMutation = useMutation({
+    mutationFn: (data: Omit<LoginFormProps, "confirmPassword">) => {
+      return LoginApi(data);
+    },
+  });
+  const onSubmit = handleSubmit((data: LoginFormProps) => {
+    const body = omit(data, ["confirmation_password"]);
+    loginMutation.mutate(
+      body as Omit<LoginFormProps, "confirmation_password">,
+      {
+        onSuccess: (data) => {
+          console.log(data);
+          toast.success("Login successful!");
+        },
+        onError: (error) => {
+          const axiosError = error as { response?: { data?: any } };
+          const errorForm = axiosError.response?.data?.data;
+          if (axiosError.response?.status === 422 && errorForm) {
+            Object.keys(errorForm).forEach((key) => {
+              setError(key as keyof LoginFormProps, {
+                message: errorForm[key as keyof typeof errorForm],
+              });
+            });
+          }
+        },
+      }
+    );
+  });
   return (
     <Wrap>
       <Form onSubmit={onSubmit}>

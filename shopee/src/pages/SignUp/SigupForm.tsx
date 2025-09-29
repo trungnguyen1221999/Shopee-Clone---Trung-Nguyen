@@ -9,6 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import { registerApi } from "../../apis/register.api";
 import { omit } from "lodash";
 import type { ErrorResponse } from "../../types/auth.type";
+import { toast } from "react-toastify";
 
 type DataType = RegisterSchemaType;
 const SigupForm = () => {
@@ -30,6 +31,7 @@ const SigupForm = () => {
     registerMutation.mutate(body, {
       onSuccess: (data) => {
         console.log(data);
+        toast.success("Register successful!");
       },
       onError: (error) => {
         // const err = error as unknown as ErrorResponse;
