@@ -14,7 +14,7 @@ const NavHoverFunction = ({ children, reference }: Props) => {
   const { refs, floatingStyles } = useFloating({
     placement: "bottom-end", // dropdown xuất hiện bên dưới
     middleware: [
-      offset({ mainAxis: 5, crossAxis: 0 }), // khoảng cách giữa reference và floating
+      offset({ mainAxis: 2, crossAxis: 0 }), // khoảng cách giữa reference và floating
     ],
   });
 

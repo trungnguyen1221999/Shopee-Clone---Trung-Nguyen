@@ -57,7 +57,7 @@ const Header = () => {
           </svg>
 
           {/* Search */}
-          <div>
+          <div className="search-container">
             <input type="text" placeholder="Free Delivery ..." />
             <div className="search">
               <CiSearch />
@@ -65,7 +65,41 @@ const Header = () => {
           </div>
 
           {/* Cart */}
-          <IoCartOutline className="cart" />
+          <NavHoverFunction
+            reference={<IoCartOutline className="cart" />}
+            children={
+              <CartDropdown>
+                <div>Recent Add Products</div>
+
+                <div className="product-list">
+                  <div className="product-item">
+                    <img src="./images/product.png" alt="product" />
+                    <p>
+                      [Trung Thu] Móc Khóa Trung Thu Nhiều Mẫu Đáng Yêu Hình Đèn
+                      Lồng Con Gà,Con Cá,Quà Tặng Trung Thu,Móc Khóa Yêu Nước
+                      02996
+                    </p>
+                    <span className="price">₫6.000</span>
+                  </div>
+
+                  <div className="product-item">
+                    <img src="./images/product.png" alt="product" />
+                    <p>
+                      [Trung Thu] Móc Khóa Trung Thu Nhiều Mẫu Đáng Yêu Hình Đèn
+                      Lồng Con Gà,Con Cá,Quà Tặng Trung Thu,Móc Khóa Yêu Nước
+                      02996
+                    </p>
+                    <span className="price">₫6.000</span>
+                  </div>
+                </div>
+
+                <div className="cart-footer">
+                  Products in cart
+                  <button>View My Shopping Cart</button>
+                </div>
+              </CartDropdown>
+            }
+          />
         </HeaderBottom>
       </StyledContainer>
     </Wrap>
@@ -132,7 +166,7 @@ const HeaderBottom = styled.div`
     cursor: pointer;
   }
 
-  > div {
+  .search-container {
     display: flex;
     align-items: center;
     border: 3px solid white;
@@ -174,6 +208,7 @@ const HeaderBottom = styled.div`
     font-size: 3.2rem;
     cursor: pointer;
     transition: transform 0.2s ease, color 0.2s ease;
+    background: transparent;
   }
 `;
 
@@ -184,5 +219,75 @@ const StyledNavInfo = styled.p`
 
   &:hover {
     color: #ee4d2d;
+  }
+`;
+const CartDropdown = styled.div`
+  width: 37.5rem; // tăng 1.5 lần (25rem * 1.5)
+  background: #fff; // nền trắng
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  color: #666;
+
+  div:first-child {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  div.product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    div.product-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      img {
+        width: 2rem;
+        height: 2rem;
+        object-fit: cover;
+        border-radius: 0.25rem;
+        flex-shrink: 0;
+      }
+
+      p {
+        margin: 0;
+        font-size: 1.3rem;
+        white-space: nowrap; // không xuống dòng
+        overflow: hidden; // ẩn phần dư
+        text-overflow: unset; // bỏ dấu ...
+      }
+
+      span.price {
+        margin-left: auto;
+        font-weight: 500;
+      }
+    }
+  }
+
+  div.cart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+
+    button {
+      background-color: #ee4d2d;
+      color: white;
+      border: none;
+      border-radius: 0.4rem;
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      font-size: 1.3rem;
+      white-space: nowrap;
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
   }
 `;
