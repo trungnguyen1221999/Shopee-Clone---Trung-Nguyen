@@ -1,3 +1,5 @@
+import Header from "../components/Header";
+
 interface MainLayoutType {
   children: React.ReactNode;
 }
@@ -5,8 +7,8 @@ interface MainLayoutType {
 const MainLayout = ({ children }: MainLayoutType) => {
   return (
     <div>
+      <Header />
       {children}
-      mainlayout
     </div>
   );
 };
