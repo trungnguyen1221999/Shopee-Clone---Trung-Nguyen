@@ -5,6 +5,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
 import { IoCartOutline } from "react-icons/io5";
 import NavHoverFunction from "../../function/NavHoverFunction";
+import { LogoutApi } from "../../apis/logout.api";
 
 const Header = () => {
   return (
@@ -41,7 +42,7 @@ const Header = () => {
               <>
                 <StyledNavInfo>My Account</StyledNavInfo>
                 <StyledNavInfo>My Purchase</StyledNavInfo>
-                <StyledNavInfo>Logout</StyledNavInfo>
+                <StyledNavInfo onClick={LogoutApi}>Logout</StyledNavInfo>
               </>
             }
           />
