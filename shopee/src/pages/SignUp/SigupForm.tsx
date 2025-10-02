@@ -89,7 +89,10 @@ const SigupForm = () => {
           <ErrorMessage>{errors.confirmation_password?.message}</ErrorMessage>
         </InputWrapper>
 
-        <Button type="submit">Sign up</Button>
+        {!registerMutation.isPending && <Button> Register </Button>}
+        {registerMutation.isPending && (
+          <LoadingButton disabled> Loading... </LoadingButton>
+        )}
         <ForgotPassword to="/">Forgot Password?</ForgotPassword>
 
         <Divider>OR</Divider>
@@ -260,4 +263,8 @@ const ErrorMessage = styled.div`
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
+`;
+const LoadingButton = styled(Button)`
+  opacity: 0.3;
+  cursor: not-allowed;
 `;
