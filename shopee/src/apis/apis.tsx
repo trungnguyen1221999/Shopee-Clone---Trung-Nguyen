@@ -27,7 +27,7 @@ class Http {
     this.instance.interceptors.request.use(
       (config) => {
         if (this.accessToken && config.headers) {
-          config.headers.Authorization = `Bearer ${this.accessToken}`;
+          config.headers.Authorization = this.accessToken;
         }
         return config;
       },
@@ -49,6 +49,7 @@ class Http {
         else if (url === "/logout") {
           this.accessToken = "";
           removeAccessTokenFromLocalStorage();
+          console.log("Logged out successfully");
         }
 
         return response.data;

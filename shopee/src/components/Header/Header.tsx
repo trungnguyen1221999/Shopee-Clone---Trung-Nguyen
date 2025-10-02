@@ -8,21 +8,22 @@ import NavHoverFunction from "../../function/NavHoverFunction";
 import { LogoutApi } from "../../apis/logout.api";
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
-import { useNavigate } from "react-router-dom";
 import { removeAccessTokenFromLocalStorage } from "../../untils/auth.api";
+import { useMutation } from "@tanstack/react-query";
 
 const Header = () => {
-  const goToLogin = useNavigate();
   const { setIsLogin } = useContext(AppContext);
-  const handleLogout = async () => {
-    try {
-      await LogoutApi();
+  const LogoutMutation = useMutation({
+    mutationFn: LogoutApi,
+    onSuccess: () => {
       setIsLogin(false);
-      removeAccessTokenFromLocalStorage();
-      goToLogin("login");
-    } catch (error) {
+    },
+    onError: (error) => {
       console.log(error);
-    }
+    },
+  });
+  const handleLogout = () => {
+    LogoutMutation.mutate();
   };
   return (
     <Wrap>

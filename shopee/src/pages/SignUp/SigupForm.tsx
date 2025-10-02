@@ -10,9 +10,12 @@ import { registerApi } from "../../apis/register.api";
 import { omit } from "lodash";
 import type { ErrorResponse } from "../../types/auth.type";
 import { toast } from "react-toastify";
+import { useContext } from "react";
+import { AppContext } from "../../context/AppContext";
 
 type DataType = RegisterSchemaType;
 const SigupForm = () => {
+  const { setIsLogin } = useContext(AppContext);
   const toHomePage = useNavigate();
 
   const {
@@ -34,6 +37,7 @@ const SigupForm = () => {
       onSuccess: (data) => {
         console.log(data);
         toast.success("Register successful!");
+        setIsLogin(true);
         toHomePage("/");
       },
       onError: (error) => {
