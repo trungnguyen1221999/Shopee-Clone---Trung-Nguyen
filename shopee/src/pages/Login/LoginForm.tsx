@@ -72,7 +72,10 @@ const LoginForm = () => {
           <ErrorMessage>{errors.password?.message}</ErrorMessage>
         </InputWrapper>
 
-        <Button>Log in</Button>
+        {!loginMutation.isPending && <Button> Login </Button>}
+        {loginMutation.isPending && (
+          <LoadingButton disabled> Loading... </LoadingButton>
+        )}
         <ForgotPassword to="/">Forgot Password?</ForgotPassword>
 
         <Divider>OR</Divider>
@@ -212,4 +215,9 @@ const RegisterLink = styled(Link)`
   margin-left: 0.5rem;
   color: ${({ theme }) => theme.colors.primary};
   font-weight: 500;
+`;
+
+const LoadingButton = styled(Button)`
+  opacity: 0.3;
+  cursor: not-allowed;
 `;
