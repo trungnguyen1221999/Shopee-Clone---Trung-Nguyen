@@ -8,11 +8,10 @@ import NavHoverFunction from "../../function/NavHoverFunction";
 import { LogoutApi } from "../../apis/logout.api";
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
-import { removeAccessTokenFromLocalStorage } from "../../untils/auth.api";
 import { useMutation } from "@tanstack/react-query";
 
 const Header = () => {
-  const { setIsLogin } = useContext(AppContext);
+  const { setIsLogin, profile } = useContext(AppContext);
   const LogoutMutation = useMutation({
     mutationFn: LogoutApi,
     onSuccess: () => {
@@ -52,7 +51,7 @@ const Header = () => {
                   src="https://png.pngtree.com/png-clipart/20190516/original/pngtree-funny-cat-taking-selfie-couple-of-kitty-with-a-smile-stick-png-image_3776833.jpg"
                   alt="avatar"
                 />
-                <p>Kai-Nguyen</p>
+                {<p>{profile?.email}</p>}
               </HeaderTopList>
             }
             children={

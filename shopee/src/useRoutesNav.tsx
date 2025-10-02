@@ -7,13 +7,14 @@ import MainLayout from "./layout/MainLayout";
 import Profile from "./pages/profile/Profile";
 import { useContext } from "react";
 import { AppContext } from "./context/AppContext";
+import PATH_CONST from "./Constant/Path.Const";
 const useRoutesNav = () => {
   const { isLogin } = useContext(AppContext);
   const protectedRoute = () => {
-    return isLogin ? <Outlet /> : <Navigate to="/login" />;
+    return isLogin ? <Outlet /> : <Navigate to={PATH_CONST.LOGIN} />;
   };
   const rejectedRoute = () => {
-    return !isLogin ? <Outlet /> : <Navigate to="/" />;
+    return !isLogin ? <Outlet /> : <Navigate to={PATH_CONST.HOME} />;
   };
   const NavLink = useRoutes([
     {
@@ -22,7 +23,7 @@ const useRoutesNav = () => {
       element: protectedRoute(),
       children: [
         {
-          path: "/",
+          path: PATH_CONST.HOME,
           index: true,
           element: (
             <MainLayout>
@@ -31,7 +32,7 @@ const useRoutesNav = () => {
           ),
         },
         {
-          path: "profile",
+          path: PATH_CONST.PROFILE,
           element: (
             <MainLayout>
               <Profile />
@@ -45,7 +46,7 @@ const useRoutesNav = () => {
       element: rejectedRoute(),
       children: [
         {
-          path: "login",
+          path: PATH_CONST.LOGIN,
           element: (
             <LoginLayout>
               <Login />
@@ -53,7 +54,7 @@ const useRoutesNav = () => {
           ),
         },
         {
-          path: "register",
+          path: PATH_CONST.REGISTER,
           element: (
             <LoginLayout>
               <SignUp />

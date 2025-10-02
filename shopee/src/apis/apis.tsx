@@ -1,11 +1,13 @@
 import axios, { type AxiosInstance } from "axios";
 import { toast } from "react-toastify";
-import type { AuthResponse, ErrorResponse } from "../types/auth.type";
+import type { AuthResponse } from "../types/auth.type";
 import {
   getAccessTokenFromLocalStorage,
-  removeAccessTokenFromLocalStorage,
+  clearLocalStorage,
   saveAccessTokenToLocalStorage,
+  saveProfileToLocalStorage,
 } from "../untils/auth.api";
+import PATH_CONST from "../Constant/Path.Const";
 
 class Http {
   instance: AxiosInstance;
@@ -40,15 +42,16 @@ class Http {
         const { url } = response.config;
 
         // Login/Register: cập nhật token RAM + localStorage
-        if (url === "/login" || url === "/register") {
+        if (url === PATH_CONST.LOGIN || url === PATH_CONST.REGISTER) {
           this.accessToken =
             (response.data as AuthResponse).data?.access_token || "";
           saveAccessTokenToLocalStorage(this.accessToken);
+          saveProfileToLocalStorage(response.data.data.user);
         }
         // Logout: xóa token RAM + localStorage
-        else if (url === "/logout") {
+        else if (url === PATH_CONST.LOGOUT) {
           this.accessToken = "";
-          removeAccessTokenFromLocalStorage();
+          clearLocalStorage();
           console.log("Logged out successfully");
         }
 

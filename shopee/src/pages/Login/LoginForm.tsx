@@ -10,10 +10,11 @@ import { omit } from "lodash";
 import { toast } from "react-toastify";
 import { AppContext } from "../../context/AppContext";
 import { useContext } from "react";
+import PATH_CONST from "../../Constant/Path.Const";
 type LoginFormProps = LoginSchemaType;
 
 const LoginForm = () => {
-  const { setIsLogin } = useContext(AppContext);
+  const { setIsLogin, setProfile } = useContext(AppContext);
   const toHomePage = useNavigate();
   const {
     register,
@@ -35,8 +36,9 @@ const LoginForm = () => {
         onSuccess: (data) => {
           console.log(data);
           toast.success("Login successful!");
-          toHomePage("/");
+          toHomePage(PATH_CONST.HOME);
           setIsLogin(true);
+          setProfile(data?.user || null);
         },
         onError: (error) => {
           const axiosError = error as { response?: { data?: any } };

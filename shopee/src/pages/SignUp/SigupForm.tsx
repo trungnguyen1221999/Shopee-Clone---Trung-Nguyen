@@ -12,10 +12,11 @@ import type { ErrorResponse } from "../../types/auth.type";
 import { toast } from "react-toastify";
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
+import PATH_CONST from "../../Constant/Path.Const";
 
 type DataType = RegisterSchemaType;
 const SigupForm = () => {
-  const { setIsLogin } = useContext(AppContext);
+  const { setIsLogin, setProfile } = useContext(AppContext);
   const toHomePage = useNavigate();
 
   const {
@@ -38,7 +39,8 @@ const SigupForm = () => {
         console.log(data);
         toast.success("Register successful!");
         setIsLogin(true);
-        toHomePage("/");
+        toHomePage(PATH_CONST.HOME);
+        setProfile(data?.user || null);
       },
       onError: (error) => {
         // const err = error as unknown as ErrorResponse;
