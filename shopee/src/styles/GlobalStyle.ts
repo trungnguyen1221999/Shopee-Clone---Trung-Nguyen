@@ -9,7 +9,7 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  html { font-size: 62.5%; }
+  html { font-size: 62.5%; overflow-x: hidden; } /* 1rem = 10px */
 
   body {
     font-family: ${({ theme }) => theme.fonts.main};
