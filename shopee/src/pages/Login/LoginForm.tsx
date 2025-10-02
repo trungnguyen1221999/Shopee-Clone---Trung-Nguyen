@@ -8,9 +8,12 @@ import { useMutation } from "@tanstack/react-query";
 import { LoginApi } from "../../apis/login.api";
 import { omit } from "lodash";
 import { toast } from "react-toastify";
+import { AppContext } from "../../context/AppContext";
+import { useContext } from "react";
 type LoginFormProps = LoginSchemaType;
 
 const LoginForm = () => {
+  const { setIsLogin } = useContext(AppContext);
   const toHomePage = useNavigate();
   const {
     register,
@@ -33,6 +36,7 @@ const LoginForm = () => {
           console.log(data);
           toast.success("Login successful!");
           toHomePage("/");
+          setIsLogin(true);
         },
         onError: (error) => {
           const axiosError = error as { response?: { data?: any } };

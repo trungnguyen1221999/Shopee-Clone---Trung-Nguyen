@@ -5,8 +5,10 @@ import SignUp from "./pages/SignUp";
 import LoginLayout from "./layout/LoginLayout";
 import MainLayout from "./layout/MainLayout";
 import Profile from "./pages/profile/Profile";
+import { useContext } from "react";
+import { AppContext } from "./context/AppContext";
 const useRoutesNav = () => {
-  const isLogin = false;
+  const { isLogin } = useContext(AppContext);
   const protectedRoute = () => {
     return isLogin ? <Outlet /> : <Navigate to="/login" />;
   };

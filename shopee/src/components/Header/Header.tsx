@@ -6,8 +6,24 @@ import { CiSearch } from "react-icons/ci";
 import { IoCartOutline } from "react-icons/io5";
 import NavHoverFunction from "../../function/NavHoverFunction";
 import { LogoutApi } from "../../apis/logout.api";
+import { useContext } from "react";
+import { AppContext } from "../../context/AppContext";
+import { useNavigate } from "react-router-dom";
+import { removeAccessTokenFromLocalStorage } from "../../untils/auth.api";
 
 const Header = () => {
+  const goToLogin = useNavigate();
+  const { setIsLogin } = useContext(AppContext);
+  const handleLogout = async () => {
+    try {
+      await LogoutApi();
+      setIsLogin(false);
+      removeAccessTokenFromLocalStorage();
+      goToLogin("login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <Wrap>
       <StyledContainer>
@@ -42,7 +58,7 @@ const Header = () => {
               <>
                 <StyledNavInfo>My Account</StyledNavInfo>
                 <StyledNavInfo>My Purchase</StyledNavInfo>
-                <StyledNavInfo onClick={LogoutApi}>Logout</StyledNavInfo>
+                <StyledNavInfo onClick={handleLogout}>Logout</StyledNavInfo>
               </>
             }
           />
