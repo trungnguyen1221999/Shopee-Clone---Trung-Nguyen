@@ -8,12 +8,14 @@ import { useQuery } from "@tanstack/react-query";
 import type { productType } from "../../types/product.type";
 import { GridLoader } from "react-spinners";
 import { useSearchParams } from "react-router-dom";
+import Pagination from "../../components/Pagination/Pagination";
 
 const ProductList = () => {
   const [searchParams] = useSearchParams();
 
   const page = Number(searchParams.get("page")) || 1;
   const limit = Number(searchParams.get("limit")) || 30;
+
   const order = (searchParams.get("order") as "desc" | "asc") || "desc";
   const sort_by =
     (searchParams.get("sort_by") as "createdAt" | "view" | "sold" | "price") ||
@@ -85,6 +87,9 @@ const ProductList = () => {
               />
             ))}
           </ProductGrid>
+          <StyledPagination>
+            <Pagination />
+          </StyledPagination>
         </RightSide>
       </Wrapper>
     </StyledContainer>
@@ -130,4 +135,11 @@ const ProductGrid = styled.div`
   @media (min-width: 1025px) {
     grid-template-columns: repeat(5, 1fr); /* desktop lớn: 5 cột */
   }
+`;
+
+const StyledPagination = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
 `;
