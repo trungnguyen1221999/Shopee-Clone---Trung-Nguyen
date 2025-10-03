@@ -87,9 +87,11 @@ const ProductList = () => {
               />
             ))}
           </ProductGrid>
-          <StyledPagination>
-            <Pagination />
-          </StyledPagination>
+          {data?.pagination && (
+            <StyledPagination>
+              <Pagination page={page} page_size={data.pagination.page_size} />
+            </StyledPagination>
+          )}
         </RightSide>
       </Wrapper>
     </StyledContainer>
