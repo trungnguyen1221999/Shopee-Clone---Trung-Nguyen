@@ -14,7 +14,7 @@ const ProductList = () => {
   const [searchParams] = useSearchParams();
 
   const page = Number(searchParams.get("page")) || 1;
-  const limit = Number(searchParams.get("limit")) || 30;
+  const limit = Number(searchParams.get("limit")) || 20;
 
   const order = (searchParams.get("order") as "desc" | "asc") || "desc";
   const sort_by =
