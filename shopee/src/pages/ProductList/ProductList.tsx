@@ -3,8 +3,19 @@ import Container from "../../components/Container";
 import ProductCart from "../../components/ProductCard/ProductCart";
 import LeftFilter from "./LeftFilter/LeftFilter";
 import TopFiler from "./TopFilter/TopFiler";
+import { getProductList } from "../../apis/productList.api";
+import { useQuery } from "@tanstack/react-query";
+import type { productType } from "../../types/product.type";
+import { GridLoader } from "react-spinners";
 
 const ProductList = () => {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["productList"],
+    queryFn: () => getProductList({ page: 1, limit: 30 }),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  // data.products chính là array bạn cần
   return (
     <StyledContainer>
       <Wrapper>
@@ -13,12 +24,32 @@ const ProductList = () => {
         </LeftFilterWrapper>
         <RightSide>
           <TopFiler />
+          {isLoading && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "50vh",
+              }}
+            >
+              <GridLoader color="#ff6f61" />
+            </div>
+          )}
           <ProductGrid>
-            {Array(30)
-              .fill(0)
-              .map((_, index) => (
-                <ProductCart key={index} />
-              ))}
+            {data?.products.map(
+              (product: productType["data"], index: number) => (
+                <ProductCart
+                  key={index}
+                  productImg={product.images[0]}
+                  productName={product.name}
+                  productPrice={product.price}
+                  productPriceBeforeDiscount={product.price_before_discount}
+                  productRating={product.rating}
+                  productSold={product.sold}
+                />
+              )
+            )}
           </ProductGrid>
         </RightSide>
       </Wrapper>

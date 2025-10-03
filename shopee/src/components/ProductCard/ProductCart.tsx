@@ -2,24 +2,36 @@ import React from "react";
 import { IoStar } from "react-icons/io5";
 import styled from "styled-components";
 
-const ProductCart = () => {
+interface ProductCartProps {
+  productImg: string;
+  productName: string;
+  productPrice: number;
+  productPriceBeforeDiscount: number;
+  productRating: number;
+  productSold: number;
+}
+const ProductCart: React.FC<ProductCartProps> = ({
+  productImg,
+  productName,
+  productPrice,
+  productPriceBeforeDiscount,
+  productRating,
+  productSold,
+}) => {
   return (
     <Card>
-      <Image src="/images/shoes.jpg" alt="Shoe" />
-      <Title>
-        Giày Đá Bóng Vapor 16 Elite Winbro VN Đế Đinh MG Siêu Bám Sân, Sân Cỏ
-        Nhân Tạo Sân Cỏ Tự Nhiên
-      </Title>
+      <Image src={productImg} />
+      <Title>{productName}</Title>
       <Price>
-        <OldPrice>390.000₫</OldPrice>
-        <NewPrice>270.000₫</NewPrice>
+        <OldPrice>{productPriceBeforeDiscount}</OldPrice>
+        <NewPrice>{productPrice}</NewPrice>
       </Price>
       <Rating>
         <Stars>
           <IoStar />
-          <span>4.5</span>
+          <span>{productRating}</span>
         </Stars>
-        <Sold>123 sold</Sold>
+        <Sold>{productSold} sold</Sold>
       </Rating>
     </Card>
   );
@@ -46,10 +58,12 @@ const Card = styled.div`
 `;
 
 const Image = styled.img`
-  width: 100%;
+  height: 188px;
+  width: 188px;
   border-radius: 2px;
   object-fit: cover;
   overflow: hidden;
+  margin: 0 auto;
 `;
 
 const Title = styled.p`
