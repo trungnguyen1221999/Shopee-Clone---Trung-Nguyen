@@ -37,19 +37,17 @@ const ProductList = () => {
             </div>
           )}
           <ProductGrid>
-            {data?.products.map(
-              (product: productType["data"], index: number) => (
-                <ProductCart
-                  key={index}
-                  productImg={product.images[0]}
-                  productName={product.name}
-                  productPrice={product.price}
-                  productPriceBeforeDiscount={product.price_before_discount}
-                  productRating={product.rating}
-                  productSold={product.sold}
-                />
-              )
-            )}
+            {data?.products.map((product: productType["data"]) => (
+              <ProductCart
+                key={product._id}
+                productImg={product.images[0]}
+                productName={product.name}
+                productPrice={product.price}
+                productPriceBeforeDiscount={product.price_before_discount}
+                productRating={product.rating}
+                productSold={product.sold}
+              />
+            ))}
           </ProductGrid>
         </RightSide>
       </Wrapper>

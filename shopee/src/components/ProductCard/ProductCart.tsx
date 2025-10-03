@@ -1,6 +1,8 @@
 import React from "react";
 import { IoStar } from "react-icons/io5";
 import styled from "styled-components";
+import currencyFormat from "../../untils/currencyFormat";
+import soldFormat from "../../untils/soldFormat";
 
 interface ProductCartProps {
   productImg: string;
@@ -23,15 +25,15 @@ const ProductCart: React.FC<ProductCartProps> = ({
       <Image src={productImg} />
       <Title>{productName}</Title>
       <Price>
-        <OldPrice>{productPriceBeforeDiscount}</OldPrice>
-        <NewPrice>{productPrice}</NewPrice>
+        <OldPrice>{currencyFormat(productPriceBeforeDiscount)}₫</OldPrice>
+        <NewPrice>{currencyFormat(productPrice)}₫</NewPrice>
       </Price>
       <Rating>
         <Stars>
           <IoStar />
           <span>{productRating}</span>
         </Stars>
-        <Sold>{productSold} sold</Sold>
+        <Sold>{soldFormat(productSold)} sold</Sold>
       </Rating>
     </Card>
   );
