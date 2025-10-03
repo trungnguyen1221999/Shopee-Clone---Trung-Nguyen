@@ -46,42 +46,28 @@ const LeftFilter = () => {
         <p>Rating</p>
         <label>
           <Stars>
-            <IoStar />
-            <IoStar />
-            <IoStar />
-            <IoStar />
-            <IoStar />
+            <StarRating rating={5} />
           </Stars>
         </label>
         <label>
           <Stars>
-            <IoStar />
-            <IoStar />
-            <IoStar />
-            <IoStar />
-          </Stars>{" "}
-          & up
+            <StarRating rating={4} /> <span>& Up</span>
+          </Stars>
         </label>
         <label>
           <Stars>
-            <IoStar />
-            <IoStar />
-            <IoStar />
-          </Stars>{" "}
-          & up
+            <StarRating rating={3} /> <span>& Up</span>
+          </Stars>
         </label>
         <label>
           <Stars>
-            <IoStar />
-            <IoStar />
-          </Stars>{" "}
-          & up
+            <StarRating rating={2} /> <span>& Up</span>
+          </Stars>
         </label>
         <label>
           <Stars>
-            <IoStar />
-          </Stars>{" "}
-          & up
+            <StarRating rating={1} /> <span>& Up</span>
+          </Stars>
         </label>
       </Rating>
 
@@ -93,6 +79,23 @@ const LeftFilter = () => {
 };
 
 export default LeftFilter;
+
+// ⭐ Component hiển thị rating
+const StarRating = ({ rating }: { rating: number }) => {
+  return (
+    <>
+      {Array(5)
+        .fill(0)
+        .map((_, index) => (
+          <IoStar
+            key={index}
+            color={index < rating ? "gold" : "#ccc"} // vàng hoặc xám
+          />
+        ))}
+    </>
+  );
+};
+
 // Wrapper
 const Wrapper = styled.div`
   display: flex;
@@ -136,20 +139,19 @@ const CheckboxList = styled.ul`
 `;
 
 // Price input
-// Price input
 const PriceRange = styled.div`
   display: flex;
-  gap: 4px; /* giảm khoảng cách giữa MIN - MAX */
+  gap: 4px;
   align-items: center;
   margin-top: 8px;
   margin-bottom: 1.5rem;
 
   input {
     width: 100%;
-    padding: 4px 6px; /* padding nhỏ hơn */
+    padding: 4px 6px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 13px; /* font nhỏ hơn */
+    font-size: 13px;
   }
 
   span {
@@ -175,11 +177,11 @@ const Button = styled.button`
   }
 `;
 
-// Stars
+// Stars wrapper
 const Stars = styled.span`
-  color: gold;
   display: inline-flex;
-  gap: 2px;
+  gap: 4px;
+  align-items: center;
 `;
 
 const Rating = styled.div`
