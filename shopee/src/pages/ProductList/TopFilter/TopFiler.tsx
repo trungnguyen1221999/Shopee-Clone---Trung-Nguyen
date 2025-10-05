@@ -1,6 +1,6 @@
 import type { Dictionary } from "lodash";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import { createSearchParams, Link } from "react-router-dom";
+import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import PATH_CONST from "../../../Constant/Path.Const";
 
@@ -10,15 +10,40 @@ interface TopFilerProps {
 }
 
 const TopFiler = ({ params, page_size }: TopFilerProps) => {
-  const { page } = params;
+  const { page, sort_by = "createdAt" } = params;
+  const navigation = useNavigate();
+  const handleSortChange = (newSort: "view" | "createdAt" | "sold") => {
+    navigation({
+      pathname: PATH_CONST.HOME,
+      search: createSearchParams({
+        ...params,
+        sort_by: newSort,
+      }).toString(),
+    });
+  };
   return (
     <Wrapper>
       <SortSection>
         <span>Sort by</span>
         <SortButtons>
-          <SortButton active>Relevance</SortButton>
-          <SortButton>Latest</SortButton>
-          <SortButton>Top Sales</SortButton>
+          <SortButton
+            onClick={() => handleSortChange("view")}
+            active={sort_by === "view"}
+          >
+            Relevance
+          </SortButton>
+          <SortButton
+            onClick={() => handleSortChange("createdAt")}
+            active={sort_by === "createdAt"}
+          >
+            Latest
+          </SortButton>
+          <SortButton
+            onClick={() => handleSortChange("sold")}
+            active={sort_by === "sold"}
+          >
+            Top Sales
+          </SortButton>
         </SortButtons>
         <SortSelect>
           <select>
