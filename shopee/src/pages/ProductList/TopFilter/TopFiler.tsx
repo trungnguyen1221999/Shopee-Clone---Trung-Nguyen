@@ -17,7 +17,17 @@ const TopFiler = ({ params, page_size }: TopFilerProps) => {
       pathname: PATH_CONST.HOME,
       search: createSearchParams({
         ...params,
-        sort_by: newSort,
+        sort_by: newSort || "createdAt",
+      }).toString(),
+    });
+  };
+  const handleSortOrder = (order: "asc" | "desc") => {
+    navigation({
+      pathname: PATH_CONST.HOME,
+      search: createSearchParams({
+        ...params,
+        sort_by: "price",
+        order: order || "desc",
       }).toString(),
     });
   };
@@ -45,10 +55,16 @@ const TopFiler = ({ params, page_size }: TopFilerProps) => {
             Top Sales
           </SortButton>
         </SortButtons>
-        <SortSelect>
-          <select>
-            <option value="asc">Price: Low to High</option>
-            <option value="desc">Price: High to Low</option>
+        <SortSelect active={sort_by === "price"}>
+          <select
+            onChange={(e) => handleSortOrder(e.target.value as "asc" | "desc")}
+          >
+            <option onClick={() => handleSortOrder("asc")} value="asc">
+              Price: Low to High
+            </option>
+            <option onChange={() => handleSortOrder("desc")} value="desc">
+              Price: High to Low
+            </option>
           </select>
         </SortSelect>
       </SortSection>
@@ -131,12 +147,24 @@ const SortButton = styled.button<{ active?: boolean }>`
   }
 `;
 
-const SortSelect = styled.div`
+const SortSelect = styled.div<{ active?: boolean }>`
   select {
     padding: 6px 10px;
     border-radius: 4px;
     border: 1px solid #ccc;
     cursor: pointer;
+    background-color: ${({ active, theme }) =>
+      active ? theme.colors.primary : "white"};
+    color: ${({ active }) => (active ? "white" : "black")};
+  }
+  .price {
+    background-color: ${({ active, theme }) =>
+      active ? theme.colors.primary : "white"};
+    color: ${({ active }) => (active ? "white" : "black")};
+  }
+  option {
+    background-color: #fff;
+    color: black;
   }
 `;
 
