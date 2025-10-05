@@ -7,18 +7,23 @@ import { getProductList } from "../../apis/productList.api";
 import { useQuery } from "@tanstack/react-query";
 import type { productType } from "../../types/product.type";
 import { GridLoader } from "react-spinners";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";
 import type { ProductListParams } from "./../../apis/productList.api";
 import { omitBy, isUndefined } from "lodash";
-import { useState } from "react";
-const ProductList = () => {
-  const [searchParams] = useSearchParams();
+export type QueryParams = ProductListParams;
 
-  const params: ProductListParams = {
-    page: Number(searchParams.get("page")) || 1,
-    limit: Number(searchParams.get("limit")) || 20,
-    order: (searchParams.get("order") as "asc" | "desc") || "desc",
+const ProductList = () => {
+  type paramsType = {
+    [key in keyof QueryParams]: string;
+  };
+  const [searchParams] = useSearchParams();
+  const params: paramsType = {
+    page: searchParams.get("page") || "1",
+    limit: searchParams.get("limit") || "20",
+    order: (["asc", "desc"].includes(searchParams.get("order") || "")
+      ? (searchParams.get("order") as "asc" | "desc")
+      : "desc") as "asc" | "desc" | undefined,
     sort_by:
       (searchParams.get("sort_by") as
         | "createdAt"
@@ -27,32 +32,24 @@ const ProductList = () => {
         | "price") || "createdAt",
     category: searchParams.get("category") || undefined,
     exclude: searchParams.get("exclude") || undefined,
-    rating_filter: Number(searchParams.get("rating_filter")) || undefined,
-    price_max: Number(searchParams.get("price_max")) || undefined,
-    price_min: Number(searchParams.get("price_min")) || undefined,
+    rating_filter: searchParams.get("rating_filter") || undefined,
+    price_max: searchParams.get("price_max") || undefined,
+    price_min: searchParams.get("price_min") || undefined,
     name: searchParams.get("name") || undefined,
   };
 
-  const cleanedParams = omitBy(params, isUndefined) as ProductListParams;
-  const [currentParams, setCurrentParams] = useState(cleanedParams);
+  const cleanedParams = omitBy(params, isUndefined);
+
   const { data, isLoading } = useQuery({
-    queryKey: ["productList", currentParams],
-    queryFn: () => getProductList(currentParams),
+    queryKey: ["productList", cleanedParams],
+    queryFn: () =>
+      getProductList({
+        ...cleanedParams,
+        page: Number(cleanedParams.page),
+        limit: Number(cleanedParams.limit),
+      }),
   });
-  const handleNextPage = () => {
-    if (currentParams.page < data.pagination.page_size) {
-      setCurrentParams({ ...currentParams, page: currentParams.page + 1 });
-    }
-  };
-  const handlePrevPage = () => {
-    if (currentParams.page > 1) {
-      setCurrentParams({ ...currentParams, page: currentParams.page - 1 });
-    }
-  };
-  const handleToPage = (page: number) => {
-    setCurrentParams({ ...currentParams, page });
-    const toPage = Navigate();
-  };
+
   // data.products chính là array bạn cần
   return (
     <StyledContainer>
@@ -63,10 +60,8 @@ const ProductList = () => {
         <RightSide>
           {data?.pagination && (
             <TopFiler
-              page={currentParams.page}
+              params={cleanedParams}
               page_size={data.pagination.page_size}
-              onNextPage={handleNextPage}
-              onPrevPage={handlePrevPage}
             />
           )}
 
@@ -98,11 +93,8 @@ const ProductList = () => {
           {data?.pagination && (
             <StyledPagination>
               <Pagination
-                params={{
-                  ...currentParams,
-                  page_size: data.pagination.page_size,
-                }}
-                onToPage={handleToPage}
+                params={cleanedParams}
+                page_size={data.pagination.page_size}
               />
             </StyledPagination>
           )}

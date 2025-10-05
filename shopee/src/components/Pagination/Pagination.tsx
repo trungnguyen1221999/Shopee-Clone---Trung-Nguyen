@@ -1,89 +1,121 @@
 import styled from "styled-components";
-import { Link, useLocation, createSearchParams } from "react-router-dom";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import type { ProductListParams } from "../../apis/productList.api";
+import type { QueryParams } from "../../pages/ProductList/ProductList";
+import { createSearchParams, Link } from "react-router-dom";
+import PATH_CONST from "../../Constant/Path.Const";
 
 const RANGE = 2;
-
 export default function Pagination({
   params,
-  onToPage,
+  page_size,
 }: {
-  params: ProductListParams & { page_size: number };
-  onToPage: (page: number) => void;
+  params: QueryParams;
+  page_size: number;
 }) {
-  const location = useLocation();
-  const currentParams = Object.fromEntries(
-    new URLSearchParams(location.search)
-  );
+  const page = Number(params.page);
 
-  const generatePageLink = (pageNumber: number) =>
-    `${location.pathname}?${createSearchParams({
-      ...currentParams,
-      page: pageNumber.toString(),
-    })}`;
-
-  const renderPages = () => {
-    const pages: (number | string)[] = [];
-    const added = new Set<number>();
-
-    const addPage = (p: number) => {
-      if (p >= 1 && p <= params.page_size && !added.has(p)) {
-        pages.push(p);
-        added.add(p);
+  const renderPagination = () => {
+    let dotAfter = false;
+    let dotBefore = false;
+    const renderDotBefore = (index: number) => {
+      if (!dotBefore) {
+        dotBefore = true;
+        return (
+          <span
+            key={index}
+            className="mx-2 rounded border bg-white px-3 py-2 shadow-sm"
+          >
+            ...
+          </span>
+        );
       }
+      return null;
     };
-
-    // Đầu
-    for (let i = 1; i <= RANGE; i++) addPage(i);
-
-    // Cuối
-    for (let i = params.page_size - RANGE + 1; i <= params.page_size; i++)
-      addPage(i);
-
-    // Xung quanh current page
-    for (let i = params.page - RANGE; i <= params.page + RANGE; i++) addPage(i);
-
-    // Sort lại để đúng thứ tự
-    const sorted = Array.from(pages).sort((a, b) =>
-      typeof a === "number" && typeof b === "number" ? a - b : 0
-    );
-
-    // Thêm dấu "..." khi có khoảng trống
-    const result: (number | string)[] = [];
-    for (let i = 0; i < sorted.length; i++) {
-      const current = sorted[i] as number;
-      const prev = sorted[i - 1] as number | undefined;
-      if (prev !== undefined && current - prev > 1) {
-        result.push("dot");
+    const renderDotAfter = (index: number) => {
+      if (!dotAfter) {
+        dotAfter = true;
+        return (
+          <Dot
+            key={index}
+            className="mx-2 rounded border bg-white px-3 py-2 shadow-sm"
+          >
+            ...
+          </Dot>
+        );
       }
-      result.push(current);
-    }
+      return null;
+    };
+    return Array(page_size)
+      .fill(0)
+      .map((_, index) => {
+        const pageNumber = index + 1;
 
-    return result.map((p, idx) => {
-      if (p === "dot") return <Dot key={`dot-${idx}`}>...</Dot>;
-      return (
-        <PageLink key={p} to={generatePageLink(p)} active={p === params.page}>
-          {p}
-        </PageLink>
-      );
-    });
+        // Điều kiện để return về ...
+        if (
+          page <= RANGE * 2 + 1 &&
+          pageNumber > page + RANGE &&
+          pageNumber < page_size - RANGE + 1
+        ) {
+          return renderDotAfter(index);
+        } else if (page > RANGE * 2 + 1 && page < page_size - RANGE * 2) {
+          if (pageNumber < page - RANGE && pageNumber > RANGE) {
+            return renderDotBefore(index);
+          } else if (
+            pageNumber > page + RANGE &&
+            pageNumber < page_size - RANGE + 1
+          ) {
+            return renderDotAfter(index);
+          }
+        } else if (
+          page >= page_size - RANGE * 2 &&
+          pageNumber > RANGE &&
+          pageNumber < page - RANGE
+        ) {
+          return renderDotBefore(index);
+        }
+        return (
+          <PageLink
+            to={{
+              pathname: PATH_CONST.HOME,
+              search: createSearchParams({
+                ...params,
+                page: pageNumber.toString(),
+              }).toString(),
+            }}
+            active={pageNumber === page}
+            key={index}
+          >
+            {pageNumber}
+          </PageLink>
+        );
+      });
   };
-
   return (
     <Wrapper>
       <PageLinkArrow
-        to={generatePageLink(Math.max(params.page - 1, 1))}
-        disabled={params.page === 1}
+        to={{
+          pathname: PATH_CONST.HOME,
+          search: createSearchParams({
+            ...params,
+            page: Math.max(page - 1, 1).toString(),
+          }).toString(),
+        }}
+        disabled={page === 1}
       >
         <MdKeyboardArrowLeft />
       </PageLinkArrow>
 
-      {renderPages()}
+      {renderPagination()}
 
       <PageLinkArrow
-        to={generatePageLink(Math.min(params.page + 1, params.page_size))}
-        disabled={params.page === params.page_size}
+        to={{
+          pathname: PATH_CONST.HOME,
+          search: createSearchParams({
+            ...params,
+            page: Math.min(page + 1, page_size).toString(),
+          }).toString(),
+        }}
+        disabled={page === page_size}
       >
         <MdKeyboardArrowRight />
       </PageLinkArrow>
@@ -107,7 +139,6 @@ interface PageProps {
 const PageLink = styled(Link)<PageProps>`
   padding: 6px 10px;
   border-radius: 4px;
-  border: 1px solid ${({ active }) => (active ? "#ff6f61" : "#ddd")};
   background-color: ${({ active }) => (active ? "#ff6f61" : "white")};
   color: ${({ active }) => (active ? "white" : "#333")};
   font-weight: 500;
@@ -121,11 +152,24 @@ const PageLink = styled(Link)<PageProps>`
       !active ? theme.colors.primary || "orange" : undefined};
   }
 `;
-
-const PageLinkArrow = styled(PageLink)<PageProps>`
-  padding: 4px 6px;
+const PageLinkArrow = styled(Link)<PageProps>`
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #333;
+  font-weight: 500;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
-  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover {
+    color: ${({ theme }) => theme?.colors?.primary || "orange"};
+    border-color: ${({ theme }) => theme?.colors?.primary || "orange"};
+  }
 `;
 
 const Dot = styled.span`

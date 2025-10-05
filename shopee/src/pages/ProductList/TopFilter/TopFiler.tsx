@@ -1,17 +1,16 @@
+import type { Dictionary } from "lodash";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { createSearchParams, Link } from "react-router-dom";
 import styled from "styled-components";
+import PATH_CONST from "../../../Constant/Path.Const";
 
-const TopFiler = ({
-  page,
-  page_size,
-  onNextPage,
-  onPrevPage,
-}: {
-  page: number;
+interface TopFilerProps {
+  params: Dictionary<string>;
   page_size: number;
-  onNextPage: () => void;
-  onPrevPage: () => void;
-}) => {
+}
+
+const TopFiler = ({ params, page_size }: TopFilerProps) => {
+  const { page } = params;
   return (
     <Wrapper>
       <SortSection>
@@ -38,12 +37,30 @@ const TopFiler = ({
           <div>{page_size}</div>
         </PageInfo>
         <PageButtons>
-          <button>
-            <MdKeyboardArrowLeft onClick={onPrevPage} />
-          </button>
-          <button>
-            <MdKeyboardArrowRight onClick={onNextPage} />
-          </button>
+          <StyledLink
+            to={{
+              pathname: PATH_CONST.HOME,
+              search: createSearchParams({
+                ...params,
+                page: String(Math.max(Number(page) - 1, 1)),
+              }).toString(),
+            }}
+            disabled={Number(page) === 1}
+          >
+            <MdKeyboardArrowLeft />
+          </StyledLink>
+          <StyledLink
+            to={{
+              pathname: PATH_CONST.HOME,
+              search: createSearchParams({
+                ...params,
+                page: String(Math.min(Number(page) + 1, page_size)),
+              }).toString(),
+            }}
+            disabled={Number(page) === page_size}
+          >
+            <MdKeyboardArrowRight />
+          </StyledLink>
         </PageButtons>
       </Pagination>
     </Wrapper>
@@ -124,5 +141,16 @@ const PageButtons = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+`;
+const StyledLink = styled(Link)<{ disabled: boolean }>`
+  border: 1px solid #e6e6e6;
+  background: white;
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  padding: 0.5rem;
+  border-radius: 4px;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  svg {
+    font-size: 1.5rem;
   }
 `;

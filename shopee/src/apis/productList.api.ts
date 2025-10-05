@@ -1,8 +1,8 @@
 import http from "./apis";
 
 export interface ProductListParams {
-  page: number;
-  limit: number;
+  page: number | string;
+  limit: number | string;
   order?: "desc" | "asc";
   sort_by?: "createdAt" | "view" | "sold" | "price";
   category?: string;
