@@ -1,15 +1,17 @@
 import styled from "styled-components";
 import { Link, useLocation, createSearchParams } from "react-router-dom";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-
-interface PaginationProps {
-  page: number;
-  page_size: number;
-}
+import type { ProductListParams } from "../../apis/productList.api";
 
 const RANGE = 2;
 
-export default function Pagination({ page, page_size }: PaginationProps) {
+export default function Pagination({
+  params,
+  onToPage,
+}: {
+  params: ProductListParams & { page_size: number };
+  onToPage: (page: number) => void;
+}) {
   const location = useLocation();
   const currentParams = Object.fromEntries(
     new URLSearchParams(location.search)
@@ -26,7 +28,7 @@ export default function Pagination({ page, page_size }: PaginationProps) {
     const added = new Set<number>();
 
     const addPage = (p: number) => {
-      if (p >= 1 && p <= page_size && !added.has(p)) {
+      if (p >= 1 && p <= params.page_size && !added.has(p)) {
         pages.push(p);
         added.add(p);
       }
@@ -36,10 +38,11 @@ export default function Pagination({ page, page_size }: PaginationProps) {
     for (let i = 1; i <= RANGE; i++) addPage(i);
 
     // Cuối
-    for (let i = page_size - RANGE + 1; i <= page_size; i++) addPage(i);
+    for (let i = params.page_size - RANGE + 1; i <= params.page_size; i++)
+      addPage(i);
 
     // Xung quanh current page
-    for (let i = page - RANGE; i <= page + RANGE; i++) addPage(i);
+    for (let i = params.page - RANGE; i <= params.page + RANGE; i++) addPage(i);
 
     // Sort lại để đúng thứ tự
     const sorted = Array.from(pages).sort((a, b) =>
@@ -60,7 +63,7 @@ export default function Pagination({ page, page_size }: PaginationProps) {
     return result.map((p, idx) => {
       if (p === "dot") return <Dot key={`dot-${idx}`}>...</Dot>;
       return (
-        <PageLink key={p} to={generatePageLink(p)} active={p === page}>
+        <PageLink key={p} to={generatePageLink(p)} active={p === params.page}>
           {p}
         </PageLink>
       );
@@ -70,8 +73,8 @@ export default function Pagination({ page, page_size }: PaginationProps) {
   return (
     <Wrapper>
       <PageLinkArrow
-        to={generatePageLink(Math.max(page - 1, 1))}
-        disabled={page === 1}
+        to={generatePageLink(Math.max(params.page - 1, 1))}
+        disabled={params.page === 1}
       >
         <MdKeyboardArrowLeft />
       </PageLinkArrow>
@@ -79,8 +82,8 @@ export default function Pagination({ page, page_size }: PaginationProps) {
       {renderPages()}
 
       <PageLinkArrow
-        to={generatePageLink(Math.min(page + 1, page_size))}
-        disabled={page === page_size}
+        to={generatePageLink(Math.min(params.page + 1, params.page_size))}
+        disabled={params.page === params.page_size}
       >
         <MdKeyboardArrowRight />
       </PageLinkArrow>

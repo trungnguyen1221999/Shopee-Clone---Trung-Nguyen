@@ -7,52 +7,52 @@ import { getProductList } from "../../apis/productList.api";
 import { useQuery } from "@tanstack/react-query";
 import type { productType } from "../../types/product.type";
 import { GridLoader } from "react-spinners";
-import { useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";
-
+import type { ProductListParams } from "./../../apis/productList.api";
+import { omitBy, isUndefined } from "lodash";
+import { useState } from "react";
 const ProductList = () => {
   const [searchParams] = useSearchParams();
 
-  const page = Number(searchParams.get("page")) || 1;
-  const limit = Number(searchParams.get("limit")) || 20;
+  const params: ProductListParams = {
+    page: Number(searchParams.get("page")) || 1,
+    limit: Number(searchParams.get("limit")) || 20,
+    order: (searchParams.get("order") as "asc" | "desc") || "desc",
+    sort_by:
+      (searchParams.get("sort_by") as
+        | "createdAt"
+        | "view"
+        | "sold"
+        | "price") || "createdAt",
+    category: searchParams.get("category") || undefined,
+    exclude: searchParams.get("exclude") || undefined,
+    rating_filter: Number(searchParams.get("rating_filter")) || undefined,
+    price_max: Number(searchParams.get("price_max")) || undefined,
+    price_min: Number(searchParams.get("price_min")) || undefined,
+    name: searchParams.get("name") || undefined,
+  };
 
-  const order = (searchParams.get("order") as "desc" | "asc") || "desc";
-  const sort_by =
-    (searchParams.get("sort_by") as "createdAt" | "view" | "sold" | "price") ||
-    "createdAt";
-  const category = searchParams.get("category") || undefined;
-  const rating_filter = Number(searchParams.get("rating_filter")) || undefined;
-  const price_min = Number(searchParams.get("price_min")) || undefined;
-  const price_max = Number(searchParams.get("price_max")) || undefined;
-  const name = searchParams.get("name") || undefined;
+  const cleanedParams = omitBy(params, isUndefined) as ProductListParams;
+  const [currentParams, setCurrentParams] = useState(cleanedParams);
   const { data, isLoading } = useQuery({
-    queryKey: [
-      "productList",
-      page,
-      limit,
-      order,
-      sort_by,
-      category,
-      rating_filter,
-      price_min,
-      price_max,
-      name,
-    ],
-    queryFn: () =>
-      getProductList({
-        page,
-        limit,
-        order,
-        sort_by,
-        category,
-        rating_filter,
-        price_min,
-        price_max,
-        name,
-      }),
-    staleTime: 0,
+    queryKey: ["productList", currentParams],
+    queryFn: () => getProductList(currentParams),
   });
-
+  const handleNextPage = () => {
+    if (currentParams.page < data.pagination.page_size) {
+      setCurrentParams({ ...currentParams, page: currentParams.page + 1 });
+    }
+  };
+  const handlePrevPage = () => {
+    if (currentParams.page > 1) {
+      setCurrentParams({ ...currentParams, page: currentParams.page - 1 });
+    }
+  };
+  const handleToPage = (page: number) => {
+    setCurrentParams({ ...currentParams, page });
+    const toPage = Navigate();
+  };
   // data.products chính là array bạn cần
   return (
     <StyledContainer>
@@ -61,7 +61,15 @@ const ProductList = () => {
           <LeftFilter />
         </LeftFilterWrapper>
         <RightSide>
-          <TopFiler />
+          {data?.pagination && (
+            <TopFiler
+              page={currentParams.page}
+              page_size={data.pagination.page_size}
+              onNextPage={handleNextPage}
+              onPrevPage={handlePrevPage}
+            />
+          )}
+
           {isLoading && (
             <div
               style={{
@@ -89,7 +97,13 @@ const ProductList = () => {
           </ProductGrid>
           {data?.pagination && (
             <StyledPagination>
-              <Pagination page={page} page_size={data.pagination.page_size} />
+              <Pagination
+                params={{
+                  ...currentParams,
+                  page_size: data.pagination.page_size,
+                }}
+                onToPage={handleToPage}
+              />
             </StyledPagination>
           )}
         </RightSide>

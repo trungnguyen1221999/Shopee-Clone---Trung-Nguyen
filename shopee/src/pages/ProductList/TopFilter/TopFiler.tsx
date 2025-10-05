@@ -1,7 +1,17 @@
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import styled from "styled-components";
 
-const TopFiler = () => {
+const TopFiler = ({
+  page,
+  page_size,
+  onNextPage,
+  onPrevPage,
+}: {
+  page: number;
+  page_size: number;
+  onNextPage: () => void;
+  onPrevPage: () => void;
+}) => {
   return (
     <Wrapper>
       <SortSection>
@@ -21,16 +31,18 @@ const TopFiler = () => {
 
       <Pagination>
         <PageInfo>
-          <div>1</div>
+          <div style={{ fontWeight: "bold", color: "#ff6f61", scale: 1.3 }}>
+            {page}
+          </div>
           <span>/</span>
-          <div>17</div>
+          <div>{page_size}</div>
         </PageInfo>
         <PageButtons>
           <button>
-            <MdKeyboardArrowLeft />
+            <MdKeyboardArrowLeft onClick={onPrevPage} />
           </button>
           <button>
-            <MdKeyboardArrowRight />
+            <MdKeyboardArrowRight onClick={onNextPage} />
           </button>
         </PageButtons>
       </Pagination>

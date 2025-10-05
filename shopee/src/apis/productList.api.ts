@@ -1,6 +1,6 @@
 import http from "./apis";
 
-interface ProductListParams {
+export interface ProductListParams {
   page: number;
   limit: number;
   order?: "desc" | "asc";
