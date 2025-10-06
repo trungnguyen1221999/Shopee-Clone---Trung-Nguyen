@@ -71,6 +71,16 @@ const LeftFilter = ({
       ).toString(),
     });
   };
+  const handleRatingFilter = (rating: number) => {
+    navigate({
+      pathname: "/",
+      search: createSearchParams({
+        ...params,
+        page: "1",
+        rating_filter: rating.toString(),
+      }).toString(),
+    });
+  };
 
   const handleClearAll = () => {
     reset();
@@ -147,13 +157,20 @@ const LeftFilter = ({
       {/* Rating */}
       <Rating>
         <p>Rating</p>
-        {[5, 4, 3, 2, 1].map((r) => (
-          <label key={r}>
-            <Stars>
-              <StarRating rating={r} /> {r < 5 && <span>& Up</span>}
-            </Stars>
-          </label>
-        ))}
+        {[5, 4, 3, 2, 1].map((r) => {
+          const isSelected = params.rating_filter === r.toString();
+          return (
+            <RatingOption
+              key={r}
+              $selected={isSelected}
+              onClick={() => handleRatingFilter(r)}
+            >
+              <Stars>
+                <StarRating rating={r} /> {r < 5 && <span>& Up</span>}
+              </Stars>
+            </RatingOption>
+          );
+        })}
       </Rating>
 
       <Divider />
@@ -274,4 +291,16 @@ const Rating = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+`;
+const RatingOption = styled.label<{ $selected: boolean }>`
+  cursor: pointer;
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  transform: ${({ $selected }) => ($selected ? "scale(1.1)" : "scale(1)")};
+  transform-origin: left center;
+  transition: transform 0.2s ease;
+  border: 1px solid ${({ $selected }) => ($selected ? "orange" : "transparent")};
+  border-radius: 4px;
+  padding: 2px 6px;
 `;
