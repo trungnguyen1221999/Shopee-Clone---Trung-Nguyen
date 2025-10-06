@@ -11,6 +11,7 @@ import { useSearchParams } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";
 import type { ProductListParams } from "./../../apis/productList.api";
 import { omitBy, isUndefined } from "lodash";
+import getCategory from "../../apis/category.api";
 export type QueryParams = ProductListParams;
 
 const ProductList = () => {
@@ -49,13 +50,16 @@ const ProductList = () => {
         limit: Number(cleanedParams.limit),
       }),
   });
-
+  const { data: categoriesData } = useQuery({
+    queryKey: ["category"],
+    queryFn: () => getCategory(),
+  });
   // data.products chính là array bạn cần
   return (
     <StyledContainer>
       <Wrapper>
         <LeftFilterWrapper>
-          <LeftFilter />
+          <LeftFilter categories={categoriesData} params={cleanedParams} />
         </LeftFilterWrapper>
         <RightSide>
           {data?.pagination && (

@@ -1,8 +1,43 @@
 import { CiFilter } from "react-icons/ci";
 import { IoStar } from "react-icons/io5";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+interface categoryType {
+  _id: string;
+  name: string;
+}
+interface paramsType {
+  page: string;
+  limit: string;
+  order?: string | undefined;
+  sort_by?: string | undefined;
+  category?: string | undefined;
+  exclude?: string | undefined;
+  rating_filter?: string | undefined;
+  price_max?: string | undefined;
+  price_min?: string | undefined;
+  name?: string | undefined;
+}
 
-const LeftFilter = () => {
+const LeftFilter = ({
+  categories,
+  params,
+}: {
+  categories: categoryType[];
+  params: paramsType;
+}) => {
+  const Navigation = useNavigate();
+  const handleCategory = (categoryId: string) => {
+    Navigation({
+      pathname: "/",
+      search: createSearchParams({
+        ...params,
+        category: categoryId,
+        page: "1",
+      }).toString(),
+    });
+  };
+
   return (
     <Wrapper>
       <Header>
@@ -13,18 +48,19 @@ const LeftFilter = () => {
       <div>
         <p>By category</p>
         <CheckboxList>
-          <li>
-            <label>
-              <input type="checkbox" />
-              Football Shoes
-            </label>
-          </li>
-          <li>
-            <label>
-              <input type="checkbox" />
-              Sneaker Shoes
-            </label>
-          </li>
+          {categories &&
+            categories.map((category) => (
+              <li key={category._id}>
+                <label>
+                  <input
+                    name="category"
+                    type="radio"
+                    onChange={() => handleCategory(category._id)}
+                  />
+                  {category.name}
+                </label>
+              </li>
+            ))}
         </CheckboxList>
       </div>
 
