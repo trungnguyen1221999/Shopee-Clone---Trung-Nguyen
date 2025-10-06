@@ -18,6 +18,7 @@ const TopFiler = ({ params, page_size }: TopFilerProps) => {
       search: createSearchParams({
         ...params,
         sort_by: newSort || "createdAt",
+        order: "desc",
       }).toString(),
     });
   };
