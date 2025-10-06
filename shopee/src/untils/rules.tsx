@@ -87,9 +87,36 @@ export const RegisterSchema = yup.object({
     .string()
     .oneOf([yup.ref("password")], "Passwords do not match")
     .required("Confirmation Password is required"),
+  price_min: yup
+    .number()
+    .transform((value, originalValue) =>
+      originalValue === "" ? undefined : value
+    )
+    .min(0, "Please enter a valid price")
+    .optional()
+    .test("is-less", "Please enter valid prices", function (value) {
+      const { price_max } = this.parent;
+      if (value === undefined || price_max === undefined) return true; // bỏ qua nếu chưa nhập
+      return Number(value) <= Number(price_max);
+    }),
+
+  price_max: yup
+    .number()
+    .transform((value, originalValue) =>
+      originalValue === "" ? undefined : value
+    )
+    .min(0, "Please enter a valid price")
+    .optional()
+    .test("is-greater", "Please enter valid prices", function (value) {
+      const { price_min } = this.parent;
+      if (value === undefined || price_min === undefined) return true; // bỏ qua nếu chưa nhập
+      return Number(price_min) <= Number(value);
+    }),
 });
 
 export type RegisterSchemaType = yup.InferType<typeof RegisterSchema>;
 
 export const LoginSchema = RegisterSchema.omit(["confirmation_password"]);
 export type LoginSchemaType = yup.InferType<typeof RegisterSchema>;
+export const PriceSchema = RegisterSchema.pick(["price_min", "price_max"]);
+export type PriceSchemaType = yup.InferType<typeof PriceSchema>;

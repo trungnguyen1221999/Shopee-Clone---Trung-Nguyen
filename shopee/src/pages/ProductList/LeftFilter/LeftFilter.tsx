@@ -1,7 +1,11 @@
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 import { CiFilter } from "react-icons/ci";
 import { IoStar } from "react-icons/io5";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import type { PriceSchemaType } from "../../../untils/rules";
+import { PriceSchema } from "../../../untils/rules";
 interface categoryType {
   _id: string;
   name: string;
@@ -26,15 +30,53 @@ const LeftFilter = ({
   categories: categoryType[];
   params: paramsType;
 }) => {
-  const Navigation = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<PriceSchemaType>({
+    resolver: yupResolver(PriceSchema),
+    defaultValues: {
+      price_min: params.price_min || "",
+      price_max: params.price_max || "",
+    },
+  });
+
+  const navigate = useNavigate();
+
   const handleCategory = (categoryId: string) => {
-    Navigation({
+    navigate({
       pathname: "/",
       search: createSearchParams({
         ...params,
         category: categoryId,
         page: "1",
       }).toString(),
+    });
+  };
+
+  // Khi người dùng nhấn Apply
+  const onSubmit = (data: PriceSchemaType) => {
+    const newParams = {
+      ...params,
+      price_min: data.price_min || "",
+      price_max: data.price_max || "",
+      page: "1",
+    };
+    navigate({
+      pathname: "/",
+      search: createSearchParams(
+        newParams as Record<string, string>
+      ).toString(),
+    });
+  };
+
+  const handleClearAll = () => {
+    reset();
+    navigate({
+      pathname: "/",
+      search: "",
     });
   };
 
@@ -45,94 +87,98 @@ const LeftFilter = ({
         <h3>Search Filter</h3>
       </Header>
 
+      {/* Category Filter */}
       <div>
         <p>By category</p>
         <CheckboxList>
-          {categories &&
-            categories.map((category) => (
-              <li key={category._id}>
-                <label>
-                  <input
-                    name="category"
-                    type="radio"
-                    onChange={() => handleCategory(category._id)}
-                  />
-                  {category.name}
-                </label>
-              </li>
-            ))}
+          {categories?.map((category) => (
+            <li key={category._id}>
+              <label>
+                <input
+                  name="category"
+                  type="radio"
+                  checked={params.category === category._id}
+                  onChange={() => handleCategory(category._id)}
+                />
+                {category.name}
+              </label>
+            </li>
+          ))}
         </CheckboxList>
       </div>
 
       <Divider />
 
+      {/* Price Range */}
       <div>
         <p>Price Range</p>
-        <PriceRange>
-          <input type="number" placeholder="₫ MIN" maxLength={13} />
-          <span>-</span>
-          <input type="number" placeholder="₫ MAX" maxLength={13} />
-        </PriceRange>
-        <Button style={{ marginTop: "8px" }}>Apply</Button>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <PriceRange>
+            <input
+              type="number"
+              placeholder="₫ MIN"
+              maxLength={13}
+              {...register("price_min")}
+            />
+            <span>-</span>
+            <input
+              type="number"
+              placeholder="₫ MAX"
+              maxLength={13}
+              {...register("price_max")}
+            />
+          </PriceRange>
+
+          {/* Hiển thị lỗi */}
+          <ErrorBox>
+            {(errors.price_min || errors.price_max) && (
+              <p>{errors.price_min?.message}</p>
+            )}
+          </ErrorBox>
+
+          <Button type="submit" style={{ marginTop: "8px" }}>
+            Apply
+          </Button>
+        </form>
       </div>
 
       <Divider />
 
+      {/* Rating */}
       <Rating>
         <p>Rating</p>
-        <label>
-          <Stars>
-            <StarRating rating={5} />
-          </Stars>
-        </label>
-        <label>
-          <Stars>
-            <StarRating rating={4} /> <span>& Up</span>
-          </Stars>
-        </label>
-        <label>
-          <Stars>
-            <StarRating rating={3} /> <span>& Up</span>
-          </Stars>
-        </label>
-        <label>
-          <Stars>
-            <StarRating rating={2} /> <span>& Up</span>
-          </Stars>
-        </label>
-        <label>
-          <Stars>
-            <StarRating rating={1} /> <span>& Up</span>
-          </Stars>
-        </label>
+        {[5, 4, 3, 2, 1].map((r) => (
+          <label key={r}>
+            <Stars>
+              <StarRating rating={r} /> {r < 5 && <span>& Up</span>}
+            </Stars>
+          </label>
+        ))}
       </Rating>
 
       <Divider />
 
-      <Button>Clear all</Button>
+      <Button onClick={handleClearAll}>Clear all</Button>
     </Wrapper>
   );
 };
 
 export default LeftFilter;
 
-// ⭐ Component hiển thị rating
+// ⭐ Rating stars
 const StarRating = ({ rating }: { rating: number }) => {
   return (
     <>
       {Array(5)
         .fill(0)
-        .map((_, index) => (
-          <IoStar
-            key={index}
-            color={index < rating ? "gold" : "#ccc"} // vàng hoặc xám
-          />
+        .map((_, i) => (
+          <IoStar key={i} color={i < rating ? "gold" : "#ccc"} />
         ))}
     </>
   );
 };
 
-// Wrapper
+// Styled components
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -140,7 +186,6 @@ const Wrapper = styled.div`
   padding: 16px;
 `;
 
-// Header
 const Header = styled.div`
   display: flex;
   align-items: center;
@@ -149,14 +194,12 @@ const Header = styled.div`
   font-size: 18px;
 `;
 
-// Divider
 const Divider = styled.hr`
   border: none;
   border-top: 1px solid #ddd;
   margin: 12px 0;
 `;
 
-// Checkbox list
 const CheckboxList = styled.ul`
   list-style: none;
   padding: 0;
@@ -174,13 +217,12 @@ const CheckboxList = styled.ul`
   }
 `;
 
-// Price input
 const PriceRange = styled.div`
   display: flex;
   gap: 4px;
   align-items: center;
   margin-top: 8px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 
   input {
     width: 100%;
@@ -196,7 +238,16 @@ const PriceRange = styled.div`
   }
 `;
 
-// Apply + Clear button
+const ErrorBox = styled.div`
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+
+  p {
+    margin: 0;
+  }
+`;
+
 const Button = styled.button`
   background-color: ${({ theme }) => theme.colors.primary || "orange"};
   color: white;
@@ -213,7 +264,6 @@ const Button = styled.button`
   }
 `;
 
-// Stars wrapper
 const Stars = styled.span`
   display: inline-flex;
   gap: 4px;
