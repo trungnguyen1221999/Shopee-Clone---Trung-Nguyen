@@ -138,7 +138,7 @@ const RightSide = styled.div`
   gap: 16px;
 `;
 
-const ProductGrid = styled.div`
+export const ProductGrid = styled.div`
   display: grid;
   gap: 16px;
 

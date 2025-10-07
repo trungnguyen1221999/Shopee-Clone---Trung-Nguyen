@@ -9,6 +9,11 @@ import DOMPurify from "dompurify";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { useState } from "react";
+import getCategory from "../../apis/category.api";
+import ProductCart from "../../components/ProductCard/ProductCart";
+import { ProductGrid } from "../ProductList/ProductList";
+import type { productType } from "../../types/product.type";
+import { getProductList } from "../../apis/productList.api";
 
 const MAX_VISIBLE_THUMBNAILS = 5;
 
@@ -20,6 +25,30 @@ const ProductDetail = () => {
     queryFn: () => getProduct(id as string),
   });
 
+  const { data: categoriesData } = useQuery({
+    queryKey: ["category"],
+    queryFn: () => getCategory(),
+  });
+  const category = categoriesData?.find(
+    (item) => item._id === data?.category._id
+  );
+  const { data: categoryProductsData } = useQuery({
+    queryKey: ["productList"],
+    queryFn: () =>
+      getProductList({
+        category: category?._id || "",
+      }),
+  });
+  const { data: topSelling } = useQuery({
+    queryKey: ["topSelling"],
+    queryFn: () =>
+      getProductList({
+        limit: 3,
+        sort_by: "sold",
+        order: "desc",
+      }),
+  });
+  console.log(topSelling);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
 
@@ -142,11 +171,55 @@ const ProductDetail = () => {
         </RightSection>
       </Wrapper>
 
-      <div
-        dangerouslySetInnerHTML={{
-          __html: cleanedDescription,
-        }}
-      />
+      <ContentWrapper>
+        <Description>
+          <Desc
+            dangerouslySetInnerHTML={{
+              __html: cleanedDescription,
+            }}
+          />
+        </Description>
+
+        {topSelling && (
+          <TopSelling>
+            <h2>Top Selling Products</h2>
+            {topSelling.products.map((product: productType["data"]) => (
+              <ProductCartStyle
+                key={product._id}
+                productId={product._id}
+                productImg={product.images[0]}
+                productName={product.name}
+                productPrice={product.price}
+                productPriceBeforeDiscount={product.price_before_discount}
+                productRating={product.rating}
+                productSold={product.sold}
+              />
+            ))}
+          </TopSelling>
+        )}
+      </ContentWrapper>
+
+      {categoryProductsData && categoryProductsData.products.length > 0 && (
+        <RelatedSection>
+          <RelatedTitle>You May Also Like</RelatedTitle>
+          <RelatedGrid>
+            {categoryProductsData.products.map(
+              (product: productType["data"]) => (
+                <ProductCart
+                  key={product._id}
+                  productId={product._id}
+                  productImg={product.images[0]}
+                  productName={product.name}
+                  productPrice={product.price}
+                  productPriceBeforeDiscount={product.price_before_discount}
+                  productRating={product.rating}
+                  productSold={product.sold}
+                />
+              )
+            )}
+          </RelatedGrid>
+        </RelatedSection>
+      )}
     </Container>
   );
 };
@@ -382,3 +455,68 @@ const BuyNowButton = styled.button`
     opacity: 0.8;
   }
 `;
+// ============= YOU MAY ALSO LIKE SECTION =============
+const RelatedSection = styled.div`
+  margin-top: 6rem;
+`;
+
+const RelatedTitle = styled.h2`
+  font-size: 2.4rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  text-align: center;
+  position: relative;
+  color: #222;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -0.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: ${({ theme }) => theme.colors.primary};
+    border-radius: 2px;
+  }
+`;
+
+const RelatedGrid = styled(ProductGrid)`
+  margin-top: 3rem;
+  gap: 2rem;
+  justify-items: center;
+  grid-template-columns: repeat(6, 1fr);
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  gap: 20rem;
+  margin-top: 3rem;
+`;
+
+const Description = styled.div`
+  flex: 1;
+`;
+
+const TopSelling = styled.div`
+  width: 15%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+`;
+
+const Desc = styled.div`
+  font-size: 1.3rem;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+const ProductCartStyle = styled(ProductCart)``;
