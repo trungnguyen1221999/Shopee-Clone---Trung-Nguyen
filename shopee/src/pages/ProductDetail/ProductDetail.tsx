@@ -15,6 +15,7 @@ import { ProductGrid } from "../ProductList/ProductList";
 import type { productType } from "../../types/product.type";
 import { getProductList } from "../../apis/productList.api";
 import { GridLoader } from "react-spinners";
+import { getIdFromURL } from "../../untils/urlFormat";
 
 const MAX_VISIBLE_THUMBNAILS = 5;
 
@@ -22,10 +23,10 @@ const ProductDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
   const { id } = useParams();
-
+  const productId = getIdFromURL(id);
   const { data, isLoading } = useQuery({
-    queryKey: ["product", id],
-    queryFn: () => getProduct(id as string),
+    queryKey: ["product", productId],
+    queryFn: () => getProduct(productId as string),
   });
 
   const { data: categoriesData } = useQuery({

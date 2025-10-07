@@ -3,7 +3,8 @@ import { IoStar } from "react-icons/io5";
 import styled from "styled-components";
 import currencyFormat from "../../untils/currencyFormat";
 import soldFormat from "../../untils/soldFormat";
-import { createSearchParams, useNavigate } from "react-router-dom";
+import { createSearchParams, Link, useNavigate } from "react-router-dom";
+import { urlFormat } from "../../untils/urlFormat";
 
 interface ProductCartProps {
   productImg: string;
@@ -23,28 +24,24 @@ const ProductCart: React.FC<ProductCartProps> = ({
   productSold,
   productId,
 }) => {
-  const navigate = useNavigate();
-  const handleToProductPage = (id: string) => {
-    navigate({
-      pathname: `/${id}`,
-    });
-  };
   return (
-    <Card onClick={() => handleToProductPage(productId)}>
-      <Image src={productImg} />
-      <Title>{productName}</Title>
-      <Price>
-        <OldPrice>{currencyFormat(productPriceBeforeDiscount)}₫</OldPrice>
-        <NewPrice>{currencyFormat(productPrice)}₫</NewPrice>
-      </Price>
-      <Rating>
-        <Stars>
-          <IoStar />
-          <span>{productRating}</span>
-        </Stars>
-        <Sold>{soldFormat(productSold)} sold</Sold>
-      </Rating>
-    </Card>
+    <Link to={`/${urlFormat(productName, productId)}`}>
+      <Card>
+        <Image src={productImg} />
+        <Title>{productName}</Title>
+        <Price>
+          <OldPrice>{currencyFormat(productPriceBeforeDiscount)}₫</OldPrice>
+          <NewPrice>{currencyFormat(productPrice)}₫</NewPrice>
+        </Price>
+        <Rating>
+          <Stars>
+            <IoStar />
+            <span>{productRating}</span>
+          </Stars>
+          <Sold>{soldFormat(productSold)} sold</Sold>
+        </Rating>
+      </Card>
+    </Link>
   );
 };
 
