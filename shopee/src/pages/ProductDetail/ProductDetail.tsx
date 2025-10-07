@@ -14,13 +14,16 @@ import ProductCart from "../../components/ProductCard/ProductCart";
 import { ProductGrid } from "../ProductList/ProductList";
 import type { productType } from "../../types/product.type";
 import { getProductList } from "../../apis/productList.api";
+import { GridLoader } from "react-spinners";
 
 const MAX_VISIBLE_THUMBNAILS = 5;
 
 const ProductDetail = () => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [startIndex, setStartIndex] = useState(0);
   const { id } = useParams();
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["product", id],
     queryFn: () => getProduct(id as string),
   });
@@ -48,11 +51,21 @@ const ProductDetail = () => {
         order: "desc",
       }),
   });
-  console.log(topSelling);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [startIndex, setStartIndex] = useState(0);
-
-  if (!data) return null;
+  if (!data)
+    return (
+      <Container>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
+          }}
+        >
+          <GridLoader color="#ff6f61" />
+        </div>
+      </Container>
+    );
 
   const images = data.images || [];
   const cleanedDescription = DOMPurify.sanitize(data.description);
@@ -80,6 +93,19 @@ const ProductDetail = () => {
 
   return (
     <Container>
+      {isLoading && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
+          }}
+        >
+          <GridLoader color="#ff6f61" />
+        </div>
+      )}
+
       <Wrapper>
         <LeftSection>
           <MainImage src={images[currentImageIndex]} alt={data.name} />
@@ -485,7 +511,6 @@ const RelatedGrid = styled(ProductGrid)`
   margin-top: 3rem;
   gap: 2rem;
   justify-items: center;
-  grid-template-columns: repeat(6, 1fr);
 `;
 
 const ContentWrapper = styled.div`
