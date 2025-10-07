@@ -8,6 +8,7 @@ import Profile from "./pages/profile/Profile";
 import { useContext } from "react";
 import { AppContext } from "./context/AppContext";
 import PATH_CONST from "./Constant/Path.Const";
+import ProductDetail from "./pages/ProductDetail/ProductDetail";
 const useRoutesNav = () => {
   const { isLogin } = useContext(AppContext);
   const protectedRoute = () => {
@@ -36,6 +37,14 @@ const useRoutesNav = () => {
           element: (
             <MainLayout>
               <Profile />
+            </MainLayout>
+          ),
+        },
+        {
+          path: PATH_CONST.PRODUCT,
+          element: (
+            <MainLayout>
+              <ProductDetail />
             </MainLayout>
           ),
         },

@@ -3,6 +3,7 @@ import { IoStar } from "react-icons/io5";
 import styled from "styled-components";
 import currencyFormat from "../../untils/currencyFormat";
 import soldFormat from "../../untils/soldFormat";
+import { Link } from "react-router-dom";
 
 interface ProductCartProps {
   productImg: string;
@@ -11,6 +12,7 @@ interface ProductCartProps {
   productPriceBeforeDiscount: number;
   productRating: number;
   productSold: number;
+  productId: string;
 }
 const ProductCart: React.FC<ProductCartProps> = ({
   productImg,
@@ -19,23 +21,26 @@ const ProductCart: React.FC<ProductCartProps> = ({
   productPriceBeforeDiscount,
   productRating,
   productSold,
+  productId,
 }) => {
   return (
-    <Card>
-      <Image src={productImg} />
-      <Title>{productName}</Title>
-      <Price>
-        <OldPrice>{currencyFormat(productPriceBeforeDiscount)}₫</OldPrice>
-        <NewPrice>{currencyFormat(productPrice)}₫</NewPrice>
-      </Price>
-      <Rating>
-        <Stars>
-          <IoStar />
-          <span>{productRating}</span>
-        </Stars>
-        <Sold>{soldFormat(productSold)} sold</Sold>
-      </Rating>
-    </Card>
+    <Link to={productId}>
+      <Card>
+        <Image src={productImg} />
+        <Title>{productName}</Title>
+        <Price>
+          <OldPrice>{currencyFormat(productPriceBeforeDiscount)}₫</OldPrice>
+          <NewPrice>{currencyFormat(productPrice)}₫</NewPrice>
+        </Price>
+        <Rating>
+          <Stars>
+            <IoStar />
+            <span>{productRating}</span>
+          </Stars>
+          <Sold>{soldFormat(productSold)} sold</Sold>
+        </Rating>
+      </Card>
+    </Link>
   );
 };
 
@@ -50,7 +55,7 @@ const Card = styled.div`
   background: white;
   border-radius: 2px;
   padding: 8px;
-  transition: 0.3s;
+  transition: 1s;
 
   cursor: pointer;
   &:hover {

@@ -7,12 +7,16 @@ import { getProductList } from "../../apis/productList.api";
 import { useQuery } from "@tanstack/react-query";
 import type { productType } from "../../types/product.type";
 import { GridLoader } from "react-spinners";
-import { useSearchParams } from "react-router-dom";
+import {
+  createSearchParams,
+  Link,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";
 import type { ProductListParams } from "./../../apis/productList.api";
 import { omitBy, isUndefined } from "lodash";
 import getCategory from "../../apis/category.api";
-import { useForm } from "react-hook-form";
 export type QueryParams = ProductListParams;
 
 const ProductList = () => {
@@ -86,6 +90,7 @@ const ProductList = () => {
             {data?.products.map((product: productType["data"]) => (
               <ProductCart
                 key={product._id}
+                productId={product._id}
                 productImg={product.images[0]}
                 productName={product.name}
                 productPrice={product.price}

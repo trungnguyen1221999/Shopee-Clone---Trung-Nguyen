@@ -1,6 +1,6 @@
 const PATH_CONST = {
   HOME: "/",
-  PRODUCT: "/product",
+  PRODUCT: ":id",
   CART: "/cart",
   CHECKOUT: "/checkout",
   LOGIN: "/login",

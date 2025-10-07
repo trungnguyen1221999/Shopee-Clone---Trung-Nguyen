@@ -5,6 +5,8 @@ const Container = styled.div`
   /* Mặc định */
   max-width: 120rem; /* hoặc 120rem nếu bạn thích */
   width: 100%;
+  background-color: #fff;
+  padding: 2rem;
 
   /* Mobile */
   @media (max-width: 768px) {

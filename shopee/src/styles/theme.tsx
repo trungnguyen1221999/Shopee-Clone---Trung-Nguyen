@@ -23,7 +23,7 @@ const theme: themePropsType = {
   colors: {
     primary: "#ee4d2d",
     text: "#000000",
-    background: "#ffffff",
+    background: "#f5f5f5",
     footer: "f5f5f5",
   },
   fonts: {

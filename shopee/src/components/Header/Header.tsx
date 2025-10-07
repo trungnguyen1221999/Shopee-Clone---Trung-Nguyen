@@ -139,6 +139,7 @@ const StyledContainer = styled(Container)`
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  background-color: transparent !important;
 `;
 
 const HeaderTop = styled.div`
