@@ -6,75 +6,49 @@ import { useEffect } from "react";
 const QuantitySelector = ({ data }) => {
   const { quantity } = data;
 
-  const {
-    register,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm({
-    defaultValues: { quantityInput: 1 },
+  // Giới hạn giá trị nhập
+  const { register, setValue, watch } = useForm({
+    defaultValues: {
+      quantity: 1,
+    },
   });
 
-  const currentValue = watch("quantityInput");
-
-  // Giới hạn giá trị nhập
-  useEffect(() => {
-    if (currentValue > quantity) {
-      setValue("quantityInput", quantity);
+  const currentQuantity = Number(watch("quantity"));
+  const handlePlus = () => {
+    if (currentQuantity < quantity) {
+      setValue("quantity", currentQuantity + 1);
     }
-  }, [currentValue, quantity, setValue]);
-
+  };
+  const handleMinus = () => {
+    if (currentQuantity > 1) {
+      setValue("quantity", currentQuantity - 1);
+    }
+  };
+  const handleChange = (e) => {
+    let value = Number(e.target.value);
+    if (value < 1) value = 1;
+    if (value > quantity) value = quantity;
+    setValue("quantity", value);
+  };
   return (
     <Wrapper>
       <label>Quantity</label>
 
       <div className="quantity-control">
-        <FaMinus
-          onClick={() =>
-            setValue("quantityInput", Math.max(1, currentValue - 1), {
-              shouldValidate: true,
-            })
-          }
-        />
+        <FaMinus onClick={handleMinus} />
 
         <input
+          value={currentQuantity}
           type="number"
-          {...register("quantityInput", {
-            required: "Enter a quantity",
-            min: { value: 1, message: "Minimum quantity is 1" },
-            max: {
-              value: quantity,
-              message: `Maximum quantity is ${quantity}`,
-            },
-            valueAsNumber: true,
-          })}
-          onChange={(e) => {
-            let val = Number(e.target.value);
-            if (val < 1) val = 1;
-            if (val <= quantity) {
-              setValue("quantityInput", val);
-            } else {
-              setValue("quantityInput", quantity);
-            }
-          }}
+          {...register("quantity", { onChange: handleChange })}
         />
 
-        <FaPlus
-          onClick={() =>
-            setValue("quantityInput", Math.min(quantity, currentValue + 1), {
-              shouldValidate: true,
-            })
-          }
-        />
+        <FaPlus onClick={handlePlus} />
       </div>
       {quantity > 0 ? (
         <span className="available">{quantity} IN STOCK</span>
       ) : (
         <span className="available">OUT OF STOCK</span>
-      )}
-
-      {errors.quantityInput && (
-        <p className="error">{errors.quantityInput.message}</p>
       )}
     </Wrapper>
   );
