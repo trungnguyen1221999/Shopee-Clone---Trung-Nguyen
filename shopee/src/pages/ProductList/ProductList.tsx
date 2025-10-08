@@ -7,43 +7,16 @@ import { getProductList } from "../../apis/productList.api";
 import { useQuery } from "@tanstack/react-query";
 import type { productType } from "../../types/product.type";
 import { GridLoader } from "react-spinners";
-import {
-  createSearchParams,
-  Link,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+
 import Pagination from "../../components/Pagination/Pagination";
 import type { ProductListParams } from "./../../apis/productList.api";
 import { omitBy, isUndefined } from "lodash";
 import getCategory from "../../apis/category.api";
+import { searchParam } from "../../untils/searchParams";
 export type QueryParams = ProductListParams;
 
 const ProductList = () => {
-  type paramsType = {
-    [key in keyof QueryParams]: string;
-  };
-  const [searchParams] = useSearchParams();
-  const params: paramsType = {
-    page: searchParams.get("page") || "1",
-    limit: searchParams.get("limit") || "20",
-    order: (["asc", "desc"].includes(searchParams.get("order") || "")
-      ? (searchParams.get("order") as "asc" | "desc")
-      : "desc") as "asc" | "desc" | undefined,
-    sort_by:
-      (searchParams.get("sort_by") as
-        | "createdAt"
-        | "view"
-        | "sold"
-        | "price") || "createdAt",
-    category: searchParams.get("category") || undefined,
-    exclude: searchParams.get("exclude") || undefined,
-    rating_filter: searchParams.get("rating_filter") || undefined,
-    price_max: searchParams.get("price_max") || undefined,
-    price_min: searchParams.get("price_min") || undefined,
-    name: searchParams.get("name") || undefined,
-  };
-
+  const params = searchParam();
   const cleanedParams = omitBy(params, isUndefined);
 
   const { data, isLoading } = useQuery({

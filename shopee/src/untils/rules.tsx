@@ -112,6 +112,7 @@ export const RegisterSchema = yup.object({
       if (value === undefined || price_min === undefined) return true; // bỏ qua nếu chưa nhập
       return Number(price_min) <= Number(value);
     }),
+  searchProduct: yup.string().optional().trim(),
 });
 
 export type RegisterSchemaType = yup.InferType<typeof RegisterSchema>;

@@ -9,9 +9,25 @@ import { LogoutApi } from "../../apis/logout.api";
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
 import { useMutation } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { createSearchParams, Link, useNavigate } from "react-router-dom";
+import { searchParam } from "../../untils/searchParams";
+import { useForm } from "react-hook-form";
+import { RegisterSchema, type RegisterSchemaType } from "../../untils/rules";
+import { yupResolver } from "@hookform/resolvers/yup";
 
+type FormData = Pick<RegisterSchemaType, "searchProduct">;
+
+const searchProduct = RegisterSchema.pick(["searchProduct"]);
 const Header = () => {
+  const navigation = useNavigate();
+
+  const params = searchParam();
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      searchProduct: "",
+    },
+    resolver: yupResolver(searchProduct),
+  });
   const { setIsLogin, profile } = useContext(AppContext);
   const LogoutMutation = useMutation({
     mutationFn: LogoutApi,
@@ -24,6 +40,20 @@ const Header = () => {
   });
   const handleLogout = () => {
     LogoutMutation.mutate();
+  };
+  const onSearchSubmit = handleSubmit((data) => {
+    console.log(data);
+    handleNavigate(data);
+  });
+  const handleNavigate = (data: FormData) => {
+    navigation({
+      pathname: "/",
+      search: createSearchParams({
+        ...params,
+        name: data.searchProduct,
+        page: "1",
+      }).toString(),
+    });
   };
   return (
     <Wrap>
@@ -76,12 +106,19 @@ const Header = () => {
             </svg>
           </Link>
           {/* Search */}
-          <div className="search-container">
-            <input type="text" placeholder="Free Delivery ..." />
-            <div className="search">
-              <CiSearch />
+          <form onSubmit={onSearchSubmit}>
+            <div className="search-container">
+              {" "}
+              <input
+                type="text"
+                placeholder="Free Delivery ..."
+                {...register("searchProduct")}
+              />
+              <button className="search">
+                <CiSearch />
+              </button>
             </div>
-          </div>
+          </form>
 
           {/* Cart */}
           <NavHoverFunction
@@ -176,7 +213,7 @@ const HeaderTopList = styled.div`
 
 const HeaderBottom = styled.div`
   display: grid;
-  grid-template-columns: 1.5fr 12fr 1fr;
+  grid-template-columns: 2.3fr 12fr auto;
   align-items: center;
   gap: 2rem;
   margin-top: 1rem;
@@ -212,14 +249,14 @@ const HeaderBottom = styled.div`
       padding: 0.8rem 1.2rem;
       cursor: pointer;
       transition: opacity 0.2s ease;
-
-      svg {
-        color: white;
-        font-size: 2rem;
-      }
+      border: none;
 
       &:hover {
         opacity: 0.9;
+      }
+      svg {
+        color: white;
+        font-size: 1.5rem;
       }
     }
   }
