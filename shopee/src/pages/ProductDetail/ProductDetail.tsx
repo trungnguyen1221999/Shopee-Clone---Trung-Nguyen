@@ -1,12 +1,11 @@
 import styled from "styled-components";
 import Container from "../../components/Container";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import getProduct from "../../apis/product.api";
 import currencyFormat from "../../untils/currencyFormat";
 import soldFormat from "../../untils/soldFormat";
 import DOMPurify from "dompurify";
-import { FaMinus, FaPlus } from "react-icons/fa6";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { useState } from "react";
 import getCategory from "../../apis/category.api";
@@ -17,33 +16,44 @@ import { getProductList } from "../../apis/productList.api";
 import { GridLoader } from "react-spinners";
 import { getIdFromURL } from "../../untils/urlFormat";
 import Quanity from "../../components/Quantity/Quanity";
+import AddToCart from "../../apis/atc.api";
 
 const MAX_VISIBLE_THUMBNAILS = 5;
 
 const ProductDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+
   const { id } = useParams();
-  const productId = getIdFromURL(id);
-  const { data, isLoading } = useQuery({
+  const productId = getIdFromURL(id as string);
+
+  // ✅ Always call hooks unconditionally
+  const { data: productData, isLoading: isProductLoading } = useQuery({
     queryKey: ["product", productId],
     queryFn: () => getProduct(productId as string),
+    enabled: !!productId,
   });
 
   const { data: categoriesData } = useQuery({
     queryKey: ["category"],
     queryFn: () => getCategory(),
   });
+
+  // ✅ Compute category safely
   const category = categoriesData?.find(
-    (item) => item._id === data?.category._id
+    (item) => item._id === productData?.category._id
   );
+
   const { data: categoryProductsData } = useQuery({
-    queryKey: ["productList"],
+    queryKey: ["productList", category?._id],
     queryFn: () =>
       getProductList({
         category: category?._id || "",
       }),
+    enabled: !!category?._id, // ✅ Prevent running before category ready
   });
+
   const { data: topSelling } = useQuery({
     queryKey: ["topSelling"],
     queryFn: () =>
@@ -53,7 +63,24 @@ const ProductDetail = () => {
         order: "desc",
       }),
   });
-  if (!data)
+
+  const addToCartMutaion = useMutation({
+    mutationFn: ({
+      productId,
+      quantity,
+    }: {
+      productId: string;
+      quantity: number;
+    }) => AddToCart(productId, quantity),
+  });
+
+  const handleAddToCart = () => {
+    if (productData)
+      addToCartMutaion.mutate({ productId: productData._id, quantity });
+    console.log("Add to cart:", productData?._id, quantity);
+  };
+
+  if (isProductLoading || !productData) {
     return (
       <Container>
         <div
@@ -68,9 +95,10 @@ const ProductDetail = () => {
         </div>
       </Container>
     );
+  }
 
-  const images = data.images || [];
-  const cleanedDescription = DOMPurify.sanitize(data.description);
+  const images = productData.images || [];
+  const cleanedDescription = DOMPurify.sanitize(productData.description);
 
   const handleNext = () => {
     if (startIndex + MAX_VISIBLE_THUMBNAILS < images.length) {
@@ -95,22 +123,9 @@ const ProductDetail = () => {
 
   return (
     <Container>
-      {isLoading && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "50vh",
-          }}
-        >
-          <GridLoader color="#ff6f61" />
-        </div>
-      )}
-
       <Wrapper>
         <LeftSection>
-          <MainImage src={images[currentImageIndex]} alt={data.name} />
+          <MainImage src={images[currentImageIndex]} alt={productData.name} />
 
           <ThumbnailList>
             {startIndex > 0 && (
@@ -144,27 +159,27 @@ const ProductDetail = () => {
 
         <RightSection>
           <RightContainer>
-            <Title>{data.name}</Title>
+            <Title>{productData.name}</Title>
 
             <StatsRow>
               <Stat>
-                <h3>{data.rating}</h3>
+                <h3>{productData.rating}</h3>
                 <span>⭐</span>
               </Stat>
               <Stat>
-                <h3>{soldFormat(data.sold)}</h3> <span>Sold</span>
+                <h3>{soldFormat(productData.sold)}</h3> <span>Sold</span>
               </Stat>
             </StatsRow>
 
             <PriceRow>
-              <Price>{currencyFormat(data.price)}₫</Price>
+              <Price>{currencyFormat(productData.price)}₫</Price>
               <BeforeDiscount>
-                {currencyFormat(data.price_before_discount)}₫
+                {currencyFormat(productData.price_before_discount)}₫
               </BeforeDiscount>
               <Discount>
                 {Math.round(
-                  ((data.price_before_discount - data.price) /
-                    data.price_before_discount) *
+                  ((productData.price_before_discount - productData.price) /
+                    productData.price_before_discount) *
                     100
                 )}
                 %
@@ -186,11 +201,18 @@ const ProductDetail = () => {
               </Guarantee>
             </InfoGrid>
           </RightContainer>
+
           <RightContainer>
-            <Quanity data={data} />
+            <Quanity
+              stock={productData.quantity}
+              value={quantity}
+              onChange={setQuantity}
+            />
 
             <ButtonGroup>
-              <AddToCartButton>Add to cart</AddToCartButton>
+              <AddToCartButton onClick={handleAddToCart}>
+                Add to cart
+              </AddToCartButton>
               <BuyNowButton>Buy now</BuyNowButton>
             </ButtonGroup>
           </RightContainer>
@@ -253,6 +275,7 @@ const ProductDetail = () => {
 export default ProductDetail;
 
 // ================== STYLED COMPONENTS ==================
+// (giữ nguyên toàn bộ styled-components như bạn có)
 
 const Wrapper = styled.div`
   display: grid;

@@ -10,10 +10,10 @@ interface AddToCartParams {
   user: string;
   product: productType;
 }
-const AddToCart = async (itemId: string, quantity: number) => {
+const AddToCart = async (product_id: string, buy_count: number) => {
   const response: AddToCartParams = await http.post("/purchases/add-to-cart", {
-    itemId,
-    quantity,
+    product_id,
+    buy_count,
   });
   return response;
 };
