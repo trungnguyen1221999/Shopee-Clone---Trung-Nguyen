@@ -16,6 +16,7 @@ import type { productType } from "../../types/product.type";
 import { getProductList } from "../../apis/productList.api";
 import { GridLoader } from "react-spinners";
 import { getIdFromURL } from "../../untils/urlFormat";
+import Quanity from "../../components/Quantity/Quanity";
 
 const MAX_VISIBLE_THUMBNAILS = 5;
 
@@ -186,12 +187,7 @@ const ProductDetail = () => {
             </InfoGrid>
           </RightContainer>
           <RightContainer>
-            <Quantity>
-              Quantity
-              <FaMinus />
-              <input type="number" placeholder="1" />
-              <FaPlus /> <span>{data.quantity} pieces available</span>
-            </Quantity>
+            <Quanity data={data} />
 
             <ButtonGroup>
               <AddToCartButton>Add to cart</AddToCartButton>
@@ -424,38 +420,11 @@ const Discount = styled.div`
   padding: 0.2rem 0.5rem;
 `;
 
-const Quantity = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  margin: 1rem 0;
-  font-size: 1.5rem;
-  color: #666;
-
-  input {
-    width: 80px;
-    height: 40px;
-    text-align: center;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  svg {
-    cursor: pointer;
-    color: #999;
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: ${({ theme }) => theme.colors.primary};
-    }
-  }
-`;
-
 const ButtonGroup = styled.div`
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  margin-top: 1rem;
+  margin-top: 4rem;
 `;
 
 const AddToCartButton = styled.button`
