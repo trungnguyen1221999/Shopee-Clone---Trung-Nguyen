@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Container from "../../components/Container";
 import { useParams } from "react-router-dom";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import getProduct from "../../apis/product.api";
 import currencyFormat from "../../untils/currencyFormat";
 import soldFormat from "../../untils/soldFormat";
@@ -21,6 +21,7 @@ import AddToCart from "../../apis/atc.api";
 const MAX_VISIBLE_THUMBNAILS = 5;
 
 const ProductDetail = () => {
+  const queryClient = useQueryClient();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -76,8 +77,16 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (productData)
-      addToCartMutaion.mutate({ productId: productData._id, quantity });
-    console.log("Add to cart:", productData?._id, quantity);
+      addToCartMutaion.mutate(
+        { productId: productData._id, quantity },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["purchase", CONST_STATUS.addToCart],
+            });
+          },
+        }
+      );
   };
 
   if (isProductLoading || !productData) {
@@ -290,7 +299,7 @@ const LeftSection = styled.div`
 `;
 
 const MainImage = styled.img`
-  width: 100%;
+  width: 500px;
   height: 500px;
   object-fit: cover;
 `;

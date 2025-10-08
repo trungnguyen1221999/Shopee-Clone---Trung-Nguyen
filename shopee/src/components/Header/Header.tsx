@@ -8,12 +8,16 @@ import NavHoverFunction from "../../function/NavHoverFunction";
 import { LogoutApi } from "../../apis/logout.api";
 import { useContext, useState } from "react";
 import { AppContext } from "../../context/AppContext";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { searchParam } from "../../untils/searchParams";
 import { useForm } from "react-hook-form";
 import { RegisterSchema, type RegisterSchemaType } from "../../untils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
+import readPurchase from "../../apis/readPurchase.api";
+import CONST_STATUS from "../../untils/ConstStatus";
+import currencyFormat from "../../untils/currencyFormat";
+import { divide } from "lodash";
 
 type FormData = Pick<RegisterSchemaType, "searchProduct">;
 
@@ -55,6 +59,12 @@ const Header = () => {
       }).toString(),
     });
   };
+  const { data: purchaseInCart, isLoading: cartLoading } = useQuery({
+    queryKey: ["purchase", { status: CONST_STATUS.addToCart }],
+    queryFn: () => readPurchase(CONST_STATUS.addToCart),
+  });
+  let totalPurchaseInCart = 0;
+  if (purchaseInCart) totalPurchaseInCart = purchaseInCart.length;
   return (
     <Wrap>
       <StyledContainer>
@@ -127,31 +137,35 @@ const Header = () => {
                 <div>Recent Add Products</div>
 
                 <div className="product-list">
-                  <div className="product-item">
-                    <img src="./images/product.png" alt="product" />
-                    <p>
-                      [Trung Thu] Móc Khóa Trung Thu Nhiều Mẫu Đáng Yêu Hình Đèn
-                      Lồng Con Gà,Con Cá,Quà Tặng Trung Thu,Móc Khóa Yêu Nước
-                      02996
-                    </p>
-                    <span className="price">₫6.000</span>
-                  </div>
+                  {cartLoading && <div>Loading...</div>}
+                  {purchaseInCart ? (
+                    purchaseInCart.slice(0, 5).map((item) => (
+                      <div className="product-item" key={item.product._id}>
+                        <img src={item.product.image} />
+                        <p>{item.product.name}</p>
 
-                  <div className="product-item">
-                    <img src="./images/product.png" alt="product" />
-                    <p>
-                      [Trung Thu] Móc Khóa Trung Thu Nhiều Mẫu Đáng Yêu Hình Đèn
-                      Lồng Con Gà,Con Cá,Quà Tặng Trung Thu,Móc Khóa Yêu Nước
-                      02996
-                    </p>
-                    <span className="price">₫6.000</span>
-                  </div>
+                        <span className="price">
+                          {currencyFormat(item.product.price)}₫
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <EmtyCart>
+                      <img
+                        src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/cart/ef577a25315c384ed114.png"
+                        alt=""
+                      />
+                      <p>Your cart is empty</p>
+                    </EmtyCart>
+                  )}
                 </div>
 
-                <div className="cart-footer">
-                  Products in cart
-                  <button>View My Shopping Cart</button>
-                </div>
+                {purchaseInCart && (
+                  <div className="cart-footer">
+                    {totalPurchaseInCart} Products in cart
+                    <button>View My Shopping Cart</button>
+                  </div>
+                )}
               </CartDropdown>
             }
           />
@@ -300,11 +314,11 @@ const CartDropdown = styled.div`
     div.product-item {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 3rem;
 
       img {
-        width: 2rem;
-        height: 2rem;
+        width: 4rem;
+        height: 4rem;
         object-fit: cover;
         border-radius: 0.25rem;
         flex-shrink: 0;
@@ -346,4 +360,11 @@ const CartDropdown = styled.div`
       }
     }
   }
+`;
+
+const EmtyCart = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
 `;
