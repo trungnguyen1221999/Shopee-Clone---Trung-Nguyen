@@ -31,4 +31,5 @@ const Container = styled(StyledContainer)`
   justify-content: center;
   align-items: center;
   gap: 5rem;
+  background-color: #c70400;
 `;

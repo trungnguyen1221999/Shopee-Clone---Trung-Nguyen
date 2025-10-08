@@ -142,59 +142,62 @@ const ProductDetail = () => {
         </LeftSection>
 
         <RightSection>
-          <Title>{data.name}</Title>
+          <RightContainer>
+            <Title>{data.name}</Title>
 
-          <StatsRow>
-            <Stat>
-              <h3>{data.rating}</h3>
-              <span>⭐</span>
-            </Stat>
-            <Stat>
-              <h3>{soldFormat(data.sold)}</h3> <span>Sold</span>
-            </Stat>
-          </StatsRow>
+            <StatsRow>
+              <Stat>
+                <h3>{data.rating}</h3>
+                <span>⭐</span>
+              </Stat>
+              <Stat>
+                <h3>{soldFormat(data.sold)}</h3> <span>Sold</span>
+              </Stat>
+            </StatsRow>
 
-          <PriceRow>
-            <Price>{currencyFormat(data.price)}₫</Price>
-            <BeforeDiscount>
-              {currencyFormat(data.price_before_discount)}₫
-            </BeforeDiscount>
-            <Discount>
-              {Math.round(
-                ((data.price_before_discount - data.price) /
-                  data.price_before_discount) *
-                  100
-              )}
-              %
-            </Discount>
-          </PriceRow>
+            <PriceRow>
+              <Price>{currencyFormat(data.price)}₫</Price>
+              <BeforeDiscount>
+                {currencyFormat(data.price_before_discount)}₫
+              </BeforeDiscount>
+              <Discount>
+                {Math.round(
+                  ((data.price_before_discount - data.price) /
+                    data.price_before_discount) *
+                    100
+                )}
+                %
+              </Discount>
+            </PriceRow>
 
-          <InfoGrid>
-            <Shipping>
-              <div className="a">Shipping</div>
-              <div>
-                <div className="b">Pre-Order (ships in 5 days)</div>
-                <div className="c">Free Ship 0₫</div>
-                <div>Get a 15.000₫ voucher if order late</div>
-              </div>
-            </Shipping>
-            <Guarantee>
-              <div className="a">Shopping Guarantee</div>
-              <div className="d">Fashion Merchandise Insurance</div>
-            </Guarantee>
-          </InfoGrid>
+            <InfoGrid>
+              <Shipping>
+                <div className="a">Shipping</div>
+                <div>
+                  <div className="b">Pre-Order (ships in 5 days)</div>
+                  <div className="c">Free Ship 0₫</div>
+                  <div>Get a 15.000₫ voucher if order late</div>
+                </div>
+              </Shipping>
+              <Guarantee>
+                <div className="a">Shopping Guarantee</div>
+                <div className="d">Fashion Merchandise Insurance</div>
+              </Guarantee>
+            </InfoGrid>
+          </RightContainer>
+          <RightContainer>
+            <Quantity>
+              Quantity
+              <FaMinus />
+              <input type="number" placeholder="1" />
+              <FaPlus /> <span>{data.quantity} pieces available</span>
+            </Quantity>
 
-          <Quantity>
-            Quantity
-            <FaMinus />
-            <input type="number" placeholder="1" />
-            <FaPlus /> <span>{data.quantity} pieces available</span>
-          </Quantity>
-
-          <ButtonGroup>
-            <AddToCartButton>Add to cart</AddToCartButton>
-            <BuyNowButton>Buy now</BuyNowButton>
-          </ButtonGroup>
+            <ButtonGroup>
+              <AddToCartButton>Add to cart</AddToCartButton>
+              <BuyNowButton>Buy now</BuyNowButton>
+            </ButtonGroup>
+          </RightContainer>
         </RightSection>
       </Wrapper>
 
@@ -269,6 +272,7 @@ const LeftSection = styled.div`
 
 const MainImage = styled.img`
   width: 100%;
+  height: 500px;
   object-fit: cover;
 `;
 
@@ -291,7 +295,8 @@ const ThumbnailWrapper = styled.div`
 `;
 
 const Thumbnail = styled.img<{ isActive?: boolean }>`
-  width: 100%;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border: 2px solid
     ${({ isActive, theme }) =>
@@ -326,6 +331,7 @@ const RightSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  justify-content: space-between;
 `;
 
 const Title = styled.h1`
@@ -450,7 +456,6 @@ const ButtonGroup = styled.div`
   align-items: center;
   gap: 1.5rem;
   margin-top: 1rem;
-  margin-bottom: 3rem;
 `;
 
 const AddToCartButton = styled.button`
@@ -546,3 +551,9 @@ const Desc = styled.div`
   gap: 1rem;
 `;
 const ProductCartStyle = styled(ProductCart)``;
+
+const RightContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+`;

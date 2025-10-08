@@ -24,4 +24,5 @@ export const StyledContainer = styled(Container)`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  background-color: #f5f5f5;
 `;

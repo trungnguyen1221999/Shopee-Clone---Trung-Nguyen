@@ -5,7 +5,7 @@ import Container from "../Container";
 const Footer = () => {
   return (
     <Wrap>
-      <Container>
+      <StyledContainer>
         <FooterTop>
           <p>{FooterData.copyright}</p>
           <CountryList>
@@ -38,7 +38,7 @@ const Footer = () => {
         </CompanyInfo>
 
         <Legacy>{FooterData.legacyCopyright}</Legacy>
-      </Container>
+      </StyledContainer>
     </Wrap>
   );
 };
@@ -139,4 +139,8 @@ const Legacy = styled.div`
   color: #767676;
   text-align: center;
   line-height: 1.2;
+`;
+
+const StyledContainer = styled(Container)`
+  background-color: #f5f5f5;
 `;
