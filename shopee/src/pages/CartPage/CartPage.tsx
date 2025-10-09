@@ -114,7 +114,7 @@ const ProductHeader = styled.div`
   grid-column: span 6;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
 `;
 
 const UnitPriceHeader = styled.div`
@@ -159,7 +159,7 @@ const ProductCell = styled.div`
   grid-column: span 6;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
   font-size: 1.4rem;
 
   img {
