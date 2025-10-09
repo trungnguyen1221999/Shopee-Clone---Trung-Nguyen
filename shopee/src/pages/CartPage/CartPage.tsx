@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import Container from "../../components/Container";
 import Quanity from "../../components/Quantity/Quanity";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import readPurchase from "../../apis/readPurchase.api";
 import CONST_STATUS from "../../untils/ConstStatus";
 import currencyFormat from "../../untils/currencyFormat";
 import { useEffect, useState } from "react";
+import updateAtc from "../../apis/updateAtc";
+import { toast } from "react-toastify";
 
 interface PurchaseItem {
   _id: string;
@@ -41,16 +43,48 @@ const CartPage = () => {
       );
     }
   }, [purchaseInCart]);
-
+  const updateQuantityMutaion = useMutation({
+    mutationFn: ({
+      buy_count,
+      product_id,
+    }: {
+      buy_count: number;
+      product_id: string;
+    }) => updateAtc({ buy_count, product_id }),
+    onSuccess: (data) => {
+      // Handle success (e.g., show a success message)
+      toast("Add to cart updated successfully");
+    },
+    onError: (error) => {
+      // Handle error (e.g., show an error message)
+      toast("Error updating cart");
+    },
+  });
   if (!purchaseInCart) return null;
   const handleChange = (value: number, index: number) => {
+    if (extendedPurchaseInCart[index].isDisabled) return;
     let val = Number(value);
     if (isNaN(val) || val < 1) val = 1;
     if (val > extendedPurchaseInCart[index].product.quantity)
       val = extendedPurchaseInCart[index].product.quantity;
     const newPurchaseInCart = [...extendedPurchaseInCart];
     newPurchaseInCart[index].buy_count = val;
+    newPurchaseInCart[index].isDisabled = true;
+
     setExtendedPurchaseInCart(newPurchaseInCart);
+    updateQuantityMutaion.mutate(
+      {
+        buy_count: val,
+        product_id: newPurchaseInCart[index].product._id,
+      },
+      {
+        onSettled: () => {
+          const updated = [...extendedPurchaseInCart];
+          updated[index].isDisabled = false;
+          setExtendedPurchaseInCart(updated);
+        },
+      }
+    );
   };
   const handleCheck = (index: number) => {
     const newPurchaseInCart = [...extendedPurchaseInCart];

@@ -6,7 +6,7 @@ interface UpdateAtcParams {
 }
 
 const updateAtc = async ({ product_id, buy_count }: UpdateAtcParams) => {
-  const response = await http.post("/purchases/update-purchase", {
+  const response = await http.put("/purchases/update-purchase", {
     product_id,
     buy_count,
   });
