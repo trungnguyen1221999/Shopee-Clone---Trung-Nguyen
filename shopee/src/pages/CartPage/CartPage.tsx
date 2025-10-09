@@ -62,6 +62,14 @@ const CartPage = () => {
       return total;
     }, 0);
   };
+  const totalCheck = () => {
+    return extendedPurchaseInCart.reduce((total, item) => {
+      if (item.isChecked) {
+        return total + 1;
+      }
+      return total;
+    }, 0);
+  };
   return (
     <Wrap>
       <StyledContainer>
@@ -139,7 +147,8 @@ const CartPage = () => {
             </FooterLeft>
             <FooterRight>
               <div>
-                Total (0) item <span>{currencyFormat(totalPrice())}₫</span>
+                Total ({totalCheck()}) item{" "}
+                <span>{currencyFormat(totalPrice())}₫</span>
               </div>
               <button className="checkout">Checkout</button>
             </FooterRight>
