@@ -7,7 +7,7 @@ import currencyFormat from "../../untils/currencyFormat";
 import soldFormat from "../../untils/soldFormat";
 import DOMPurify from "dompurify";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import getCategory from "../../apis/category.api";
 import ProductCart from "../../components/ProductCard/ProductCart";
 import { ProductGrid } from "../ProductList/ProductList";
@@ -17,6 +17,9 @@ import { GridLoader } from "react-spinners";
 import { getIdFromURL } from "../../untils/urlFormat";
 import Quanity from "../../components/Quantity/Quanity";
 import AddToCart from "../../apis/atc.api";
+import CONST_STATUS from "../../untils/ConstStatus";
+import { toast } from "react-toastify";
+import { AppContext } from "../../context/AppContext";
 
 const MAX_VISIBLE_THUMBNAILS = 5;
 
@@ -75,18 +78,59 @@ const ProductDetail = () => {
     }) => AddToCart(productId, quantity),
   });
 
+  // Hàm xử lý khi user nhấn "Thêm vào giỏ hàng"
   const handleAddToCart = () => {
-    if (productData)
-      addToCartMutaion.mutate(
-        { productId: productData._id, quantity },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({
-              queryKey: ["purchase", CONST_STATUS.addToCart],
-            });
-          },
-        }
-      );
+    // Nếu không có dữ liệu sản phẩm thì không làm gì
+    if (!productData) return;
+
+    // Gọi mutation của react-query để thêm sản phẩm vào giỏ hàng
+    addToCartMutaion.mutate(
+      { productId: productData._id, quantity }, // dữ liệu gửi lên server
+      {
+        // Callback khi server trả về thành công
+        onSuccess: (newItem) => {
+          /**
+           * 1️⃣ Cập nhật cache ngay lập tức (không cần chờ refetch)
+           * - ["purchase", CONST_STATUS.addToCart] là key của query cache
+           * - oldData: dữ liệu hiện tại trong cache
+           * - Nếu cache đang trống, tạo mảng mới chứa newItem
+           * - Nếu cache đã có dữ liệu, thêm newItem vào cuối mảng
+           */
+          queryClient.setQueryData(
+            ["purchase", CONST_STATUS.addToCart],
+            (oldData: any) => {
+              if (!oldData) return [newItem]; // cache trống
+              return [...oldData, newItem]; // thêm sản phẩm mới vào cache
+            }
+          );
+
+          /**
+           * 2️⃣ Invalidate query (tuỳ chọn nhưng thường nên làm)
+           * - Đánh dấu query này "cần refetch" từ server
+           * - Giúp đồng bộ dữ liệu với server, đảm bảo cache luôn chính xác
+           */
+          queryClient.invalidateQueries([
+            "purchase",
+            CONST_STATUS.addToCart,
+          ] as const);
+          toast.success("Item added to cart successfully!", {
+            autoClose: 2000, // tự tắt sau 2 giây
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        },
+
+        // Callback khi mutation lỗi (tuỳ chọn)
+        onError: (error) => {
+          // Có thể hiển thị thông báo lỗi cho người dùng
+          toast.error("Failed to add item to cart. Please try again.");
+          console.log(error);
+        },
+      }
+    );
   };
 
   if (isProductLoading || !productData) {
