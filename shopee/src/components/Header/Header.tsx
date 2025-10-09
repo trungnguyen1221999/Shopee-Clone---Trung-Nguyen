@@ -139,7 +139,7 @@ const Header = () => {
           {/* Cart */}
           <NavHoverFunction
             reference={
-              <CartIconWrapper>
+              <CartIconWrapper to={PATH_CONST.CART}>
                 <IoCartOutline className="cart" />
                 {totalPurchaseInCart > 0 && (
                   <CartNumber>{totalPurchaseInCart}</CartNumber>
@@ -392,7 +392,7 @@ const CartNumber = styled.div`
   justify-content: center;
   pointer-events: none;
 `;
-const CartIconWrapper = styled.div`
+const CartIconWrapper = styled(Link)`
   position: relative;
   display: inline-block;
 
