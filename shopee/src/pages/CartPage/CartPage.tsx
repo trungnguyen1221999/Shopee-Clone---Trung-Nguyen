@@ -91,6 +91,9 @@ export default CartPage;
 const Wrap = styled.div`
   padding: 4rem 0;
   background-color: #f5f5f5;
+  input {
+    accent-color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 const StyledContainer = styled(Container)`
   display: flex;
