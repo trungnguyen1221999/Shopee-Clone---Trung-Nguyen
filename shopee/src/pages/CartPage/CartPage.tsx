@@ -7,69 +7,83 @@ import CONST_STATUS from "../../untils/ConstStatus";
 import currencyFormat from "../../untils/currencyFormat";
 import { useEffect, useState } from "react";
 
+interface PurchaseItem {
+  _id: string;
+  product: any;
+  buy_count: number;
+  isChecked: boolean;
+  isDisabled: boolean;
+}
+
 const CartPage = () => {
-  const [extendedPurchaseInCart, setExtendedPurchaseInCart] = useState([]);
+  const [extendedPurchaseInCart, setExtendedPurchaseInCart] = useState<
+    PurchaseItem[]
+  >([]);
+
   const { data: purchaseInCart } = useQuery({
     queryKey: ["purchase", { status: CONST_STATUS.addToCart }],
-    queryFn: () => {
-      return readPurchase(CONST_STATUS.addToCart);
-    },
+    queryFn: () => readPurchase(CONST_STATUS.addToCart),
   });
 
-  interface PurchaseItem {
-    _id: string;
-    product: any;
-    buy_count: number;
-    isChecked: boolean;
-    isDisabled: boolean;
-  }
-
+  // ✅ Fix: đảm bảo data luôn là mảng (vì API có thể trả về { data: [...] })
   useEffect(() => {
-    setExtendedPurchaseInCart(
-      purchaseInCart.map((item: any) => ({
-        ...item,
-        isChecked: false,
-        isDisabled: false,
-      })) as PurchaseItem[]
-    );
+    const data = Array.isArray(purchaseInCart)
+      ? purchaseInCart
+      : purchaseInCart?.data;
+
+    if (data && Array.isArray(data)) {
+      setExtendedPurchaseInCart(
+        data.map((item: any) => ({
+          ...item,
+          isChecked: false,
+          isDisabled: false,
+        })) as PurchaseItem[]
+      );
+    }
   }, [purchaseInCart]);
 
+  if (!purchaseInCart) return null;
+  const handleChange = (value: number, index: number) => {
+    let val = Number(value);
+    if (isNaN(val) || val < 1) val = 1;
+    if (val > extendedPurchaseInCart[index].product.quantity)
+      val = extendedPurchaseInCart[index].product.quantity;
+    const newPurchaseInCart = [...extendedPurchaseInCart];
+    newPurchaseInCart[index].buy_count = val;
+    setExtendedPurchaseInCart(newPurchaseInCart);
+  };
   const handleCheck = (index: number) => {
-    const newPurchaseInCart: PurchaseItem[] = [...extendedPurchaseInCart];
+    const newPurchaseInCart = [...extendedPurchaseInCart];
     newPurchaseInCart[index].isChecked = !newPurchaseInCart[index].isChecked;
     setExtendedPurchaseInCart(newPurchaseInCart);
   };
 
   const isAllCheck = extendedPurchaseInCart.every(
-    (item: PurchaseItem) => item.isChecked
+    (item) => item.isChecked === true
   );
 
   const handleAllCheck = () => {
-    const newPurchaseInCart: PurchaseItem[] = extendedPurchaseInCart.map(
-      (item: PurchaseItem) => ({
-        ...item,
-        isChecked: !isAllCheck,
-      })
-    );
+    const newPurchaseInCart = extendedPurchaseInCart.map((item) => ({
+      ...item,
+      isChecked: !isAllCheck,
+    }));
     setExtendedPurchaseInCart(newPurchaseInCart);
   };
 
-  const totalPrice = () => {
-    return extendedPurchaseInCart.reduce((total, item) => {
+  const totalPrice = () =>
+    extendedPurchaseInCart.reduce((total, item) => {
       if (item.isChecked) {
         return total + item.product.price * item.buy_count;
       }
       return total;
     }, 0);
-  };
-  const totalCheck = () => {
-    return extendedPurchaseInCart.reduce((total, item) => {
-      if (item.isChecked) {
-        return total + 1;
-      }
-      return total;
-    }, 0);
-  };
+
+  const totalCheck = () =>
+    extendedPurchaseInCart.reduce(
+      (total, item) => (item.isChecked ? total + 1 : total),
+      0
+    );
+
   return (
     <Wrap>
       <StyledContainer>
@@ -89,7 +103,7 @@ const CartPage = () => {
           <ActionsHeader>Actions</ActionsHeader>
         </CartHeader>
 
-        {/* Cart Item */}
+        {/* Cart Items */}
         <div>
           {extendedPurchaseInCart.map((item, index) => (
             <CartItem key={item._id}>
@@ -104,6 +118,7 @@ const CartPage = () => {
                   <p>{item.product.name}</p>
                 </ProductInfo>
               </ProductCell>
+
               <UnitPriceCell>
                 <span className="oldPrice">
                   {currencyFormat(item.product.price_before_discount)}₫
@@ -112,16 +127,19 @@ const CartPage = () => {
                   {currencyFormat(item.product.price)}₫
                 </span>
               </UnitPriceCell>
+
               <QuantityCell>
                 <Quanity
                   stock={item.product.quantity}
                   value={item.buy_count}
-                  onChange={() => {}}
+                  onChange={(value: number) => handleChange(value, index)}
                 />
               </QuantityCell>
+
               <TotalPriceCell>
                 {currencyFormat(item.product.price * item.buy_count)}₫
               </TotalPriceCell>
+
               <ActionsCell>Delete</ActionsCell>
             </CartItem>
           ))}
@@ -138,9 +156,9 @@ const CartPage = () => {
                 onChange={handleAllCheck}
                 checked={isAllCheck}
               />
-              {purchaseInCart.length && (
+              {purchaseInCart && (
                 <p className="select-all" onClick={handleAllCheck}>
-                  Select All ({purchaseInCart.length})
+                  Select All ({extendedPurchaseInCart.length})
                 </p>
               )}
               <p>Delete</p>
@@ -161,7 +179,7 @@ const CartPage = () => {
 
 export default CartPage;
 
-// Styled Components
+/* ================== Styled ================== */
 const Wrap = styled.div`
   padding: 4rem 0;
   background-color: #f5f5f5;
@@ -288,7 +306,6 @@ const ActionsCell = styled.div`
   font-size: 1.5rem;
 `;
 
-/* ✅ Sticky Footer */
 const CartFooterWrapper = styled(Container)`
   position: sticky;
   bottom: 0;
