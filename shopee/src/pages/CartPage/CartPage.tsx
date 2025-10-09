@@ -54,6 +54,14 @@ const CartPage = () => {
     setExtendedPurchaseInCart(newPurchaseInCart);
   };
 
+  const totalPrice = () => {
+    return extendedPurchaseInCart.reduce((total, item) => {
+      if (item.isChecked) {
+        return total + item.product.price * item.buy_count;
+      }
+      return total;
+    }, 0);
+  };
   return (
     <Wrap>
       <StyledContainer>
@@ -131,7 +139,7 @@ const CartPage = () => {
             </FooterLeft>
             <FooterRight>
               <div>
-                Total (0) item <span>$0</span>
+                Total (0) item <span>{currencyFormat(totalPrice())}₫</span>
               </div>
               <button className="checkout">Checkout</button>
             </FooterRight>
@@ -312,6 +320,8 @@ const FooterRight = styled.div`
   span {
     font-weight: bold;
     margin-left: 0.5rem;
+    color: ${({ theme }) => theme.colors.primary};
+    font-size: 2rem;
   }
 
   .checkout {
