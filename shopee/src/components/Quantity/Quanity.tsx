@@ -30,7 +30,6 @@ const Quanity = ({ stock, value, onChange }: QuanityProps) => {
         <input type="number" value={value} onChange={handleChange} />
         <FaPlus onClick={handlePlus} />
       </div>
-      <span className="stock">{stock} in stock</span>
     </Wrapper>
   );
 };
@@ -48,11 +47,12 @@ const Wrapper = styled.div`
     gap: 1rem;
 
     input {
-      width: 70px;
+      width: 40px;
       height: 40px;
       text-align: center;
       border: 1px solid #ccc;
       border-radius: 4px;
+      text-align: center;
     }
 
     svg {
@@ -67,6 +67,9 @@ const Wrapper = styled.div`
 
   .stock {
     color: #888;
+  }
+  span {
+    transform: translateX(-10px);
   }
 `;
 

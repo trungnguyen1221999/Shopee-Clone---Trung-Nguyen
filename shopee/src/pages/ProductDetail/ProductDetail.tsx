@@ -263,6 +263,7 @@ const ProductDetail = () => {
                 value={quantity}
                 onChange={setQuantity}
               />
+              <span className="stock">{productData.quantity} in stock</span>
             </div>
 
             <ButtonGroup>
