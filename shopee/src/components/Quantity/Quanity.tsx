@@ -25,7 +25,6 @@ const Quanity = ({ stock, value, onChange }: QuanityProps) => {
 
   return (
     <Wrapper>
-      <label>Quantity</label>
       <div className="control">
         <FaMinus onClick={handleMinus} />
         <input type="number" value={value} onChange={handleChange} />

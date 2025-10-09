@@ -256,11 +256,14 @@ const ProductDetail = () => {
           </RightContainer>
 
           <RightContainer>
-            <Quanity
-              stock={productData.quantity}
-              value={quantity}
-              onChange={setQuantity}
-            />
+            <div className="Quantity">
+              <p>Quantity</p>
+              <Quanity
+                stock={productData.quantity}
+                value={quantity}
+                onChange={setQuantity}
+              />
+            </div>
 
             <ButtonGroup>
               <AddToCartButton onClick={handleAddToCart}>
@@ -601,4 +604,11 @@ const RightContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  .Quantity {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    font-size: 1.5rem;
+    color: rgb(112, 112, 112);
+  }
 `;

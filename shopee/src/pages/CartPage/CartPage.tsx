@@ -27,8 +27,8 @@ const CartPage = () => {
           </ProductInfo>
         </ProductCell>
         <UnitPriceCell>
-          <span>$200</span>
-          <span>$100</span>
+          <span className="oldPrice">$200</span>
+          <span className="newPrice">$100</span>
         </UnitPriceCell>
         <QuantityCell>
           <Quanity stock={5} value={1} onChange={() => {}} />
@@ -67,9 +67,10 @@ const StyledContainer = styled(Container)`
 const CartHeader = styled.div`
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  font-weight: bold;
   padding: 1rem 0;
   border-bottom: 2px solid #eee;
+  font-size: 1.6rem;
+  align-items: center; /* Căn giữa theo trục dọc */
 `;
 
 const ProductHeader = styled.div`
@@ -82,19 +83,29 @@ const ProductHeader = styled.div`
 const UnitPriceHeader = styled.div`
   grid-column: span 2;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const QuantityHeader = styled.div`
   grid-column: span 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const TotalPriceHeader = styled.div`
   grid-column: span 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ActionsHeader = styled.div`
   grid-column: span 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const CartItem = styled.div`
@@ -103,7 +114,7 @@ const CartItem = styled.div`
   align-items: center;
   padding: 1rem 0;
   border-bottom: 1px solid #eee;
-  gap: 1rem;
+  gap: 0; /* Dùng gap bên trong cell nếu cần */
 `;
 
 const ProductCell = styled.div`
@@ -111,6 +122,7 @@ const ProductCell = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+  font-size: 1.4rem;
 
   img {
     width: 50px;
@@ -128,19 +140,36 @@ const ProductInfo = styled.span`
 const UnitPriceCell = styled.div`
   grid-column: span 2;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.4rem;
+
+  .oldPrice {
+    text-decoration: line-through;
+    color: #999;
+  }
 `;
 
 const QuantityCell = styled.div`
   grid-column: span 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const TotalPriceCell = styled.div`
   grid-column: span 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ActionsCell = styled.div`
   grid-column: span 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   color: red;
 `;
