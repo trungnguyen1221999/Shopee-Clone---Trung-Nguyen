@@ -9,6 +9,7 @@ import { useContext } from "react";
 import { AppContext } from "./context/AppContext";
 import PATH_CONST from "./Constant/Path.Const";
 import ProductDetail from "./pages/ProductDetail/ProductDetail";
+import CartPage from "./pages/CartPage/CartPage";
 const useRoutesNav = () => {
   const { isLogin } = useContext(AppContext);
   const protectedRoute = () => {
@@ -45,6 +46,14 @@ const useRoutesNav = () => {
           element: (
             <MainLayout>
               <ProductDetail />
+            </MainLayout>
+          ),
+        },
+        {
+          path: PATH_CONST.CART,
+          element: (
+            <MainLayout>
+              <CartPage />
             </MainLayout>
           ),
         },
