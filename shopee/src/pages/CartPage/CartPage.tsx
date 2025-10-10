@@ -8,6 +8,7 @@ import currencyFormat from "../../untils/currencyFormat";
 import { useEffect, useState } from "react";
 import updateAtc from "../../apis/updateAtc";
 import { toast } from "react-toastify";
+import deleteAtc from "../../apis/deleteAtc";
 
 interface PurchaseItem {
   _id: string;
@@ -60,7 +61,6 @@ const CartPage = () => {
       toast("Error updating cart");
     },
   });
-  if (!purchaseInCart) return null;
   const handleChange = (value: number, index: number) => {
     if (extendedPurchaseInCart[index].isDisabled) return;
     let val = Number(value);
@@ -117,6 +117,34 @@ const CartPage = () => {
       (total, item) => (item.isChecked ? total + 1 : total),
       0
     );
+  const deleteItemInCartMutation = useMutation({
+    mutationFn: (purchase_id: string[]) => deleteAtc(purchase_id),
+    onSuccess: () => {
+      const newPurchaseInCart = extendedPurchaseInCart.filter(
+        (item) => !item.isChecked
+      );
+      setExtendedPurchaseInCart(newPurchaseInCart);
+      toast("Delete item in cart successfully");
+    },
+  });
+  const handleDeleteItemInCart = (itemIndex: number) => {
+    const purchase_id = extendedPurchaseInCart[itemIndex]._id;
+    deleteItemInCartMutation.mutate([purchase_id], {
+      onSuccess: () => {
+        const newPurchaseInCart = extendedPurchaseInCart.filter(
+          (item, index) => index !== itemIndex
+        );
+        setExtendedPurchaseInCart(newPurchaseInCart);
+      },
+    });
+  };
+  const handleDeletedMultipleItemInCart = () => {
+    const purchase_id = extendedPurchaseInCart
+      .filter((item) => item.isChecked)
+      .map((item) => item._id);
+    deleteItemInCartMutation.mutate(purchase_id);
+  };
+  if (!purchaseInCart) return null;
 
   return (
     <Wrap>
@@ -174,7 +202,9 @@ const CartPage = () => {
                 {currencyFormat(item.product.price * item.buy_count)}₫
               </TotalPriceCell>
 
-              <ActionsCell>Delete</ActionsCell>
+              <ActionsCell onClick={() => handleDeleteItemInCart(index)}>
+                Delete
+              </ActionsCell>
             </CartItem>
           ))}
         </div>
@@ -195,7 +225,12 @@ const CartPage = () => {
                   Select All ({extendedPurchaseInCart.length})
                 </p>
               )}
-              <p>Delete</p>
+              <button
+                className="delete"
+                onClick={handleDeletedMultipleItemInCart}
+              >
+                Delete
+              </button>
             </FooterLeft>
             <FooterRight>
               <div>
@@ -369,6 +404,12 @@ const FooterLeft = styled.div`
     accent-color: ${({ theme }) => theme.colors.primary};
     width: 18px;
     height: 18px;
+  }
+  .delete {
+    font-size: 1.6rem;
+    outline: none;
+    border: none;
+    background-color: transparent;
   }
 `;
 
