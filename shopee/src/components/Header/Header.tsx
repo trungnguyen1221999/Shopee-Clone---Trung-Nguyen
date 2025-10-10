@@ -18,6 +18,7 @@ import readPurchase from "../../apis/readPurchase.api";
 import CONST_STATUS from "../../untils/ConstStatus";
 import currencyFormat from "../../untils/currencyFormat";
 import PATH_CONST from "../../Constant/Path.Const";
+import { urlFormat } from "../../untils/urlFormat";
 
 type FormData = Pick<RegisterSchemaType, "searchProduct">;
 
@@ -153,13 +154,20 @@ const Header = () => {
                   {cartLoading && <div>Loading...</div>}
                   {purchaseInCart?.length ? (
                     purchaseInCart.slice(0, 5).map((item) => (
-                      <div className="product-item" key={item.product._id}>
-                        <img src={item.product.image} />
-                        <p>{item.product.name}</p>
-                        <span className="price">
-                          {currencyFormat(item.product.price)}₫
-                        </span>
-                      </div>
+                      <Link
+                        to={`/${urlFormat(
+                          item.product.name,
+                          item.product._id
+                        )}`}
+                      >
+                        <div className="product-item" key={item.product._id}>
+                          <img src={item.product.image} />
+                          <p>{item.product.name}</p>
+                          <span className="price">
+                            {currencyFormat(item.product.price)}₫
+                          </span>
+                        </div>
+                      </Link>
                     ))
                   ) : (
                     <EmtyCart>
