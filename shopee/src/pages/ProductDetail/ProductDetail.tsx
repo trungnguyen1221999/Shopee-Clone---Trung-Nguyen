@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Container from "../../components/Container";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import getProduct from "../../apis/product.api";
 import currencyFormat from "../../untils/currencyFormat";
@@ -25,6 +25,8 @@ const MAX_VISIBLE_THUMBNAILS = 5;
 
 const ProductDetail = () => {
   const queryClient = useQueryClient();
+  const navgigate = useNavigate();
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -38,7 +40,7 @@ const ProductDetail = () => {
     queryFn: () => getProduct(productId as string),
     enabled: !!productId,
   });
-
+  console.log("Product Data:", productData);
   const { data: categoriesData } = useQuery({
     queryKey: ["category"],
     queryFn: () => getCategory(),
@@ -70,12 +72,12 @@ const ProductDetail = () => {
 
   const addToCartMutaion = useMutation({
     mutationFn: ({
-      productId,
-      quantity,
+      product_id,
+      buy_count,
     }: {
-      productId: string;
-      quantity: number;
-    }) => AddToCart(productId, quantity),
+      product_id: string;
+      buy_count: number;
+    }) => AddToCart(product_id, buy_count),
   });
 
   // Hàm xử lý khi user nhấn "Thêm vào giỏ hàng"
@@ -85,7 +87,7 @@ const ProductDetail = () => {
 
     // Gọi mutation của react-query để thêm sản phẩm vào giỏ hàng
     addToCartMutaion.mutate(
-      { productId: productData._id, quantity }, // dữ liệu gửi lên server
+      { product_id: productData._id, buy_count: quantity }, // dữ liệu gửi lên server
       {
         // Callback khi server trả về thành công
         onSuccess: (newItem) => {
@@ -173,6 +175,18 @@ const ProductDetail = () => {
     startIndex,
     startIndex + MAX_VISIBLE_THUMBNAILS
   );
+  const handleBuyNow = async (productId: string, quantity = 1) => {
+    try {
+      await addToCartMutaion.mutateAsync({
+        product_id: productId,
+        buy_count: quantity,
+      });
+      toast.success("Item added to cart successfully!");
+      navgigate("/cart");
+    } catch (error) {
+      toast.error("Failed to add item to cart. Please try again.");
+    }
+  };
 
   return (
     <Container>
@@ -270,7 +284,11 @@ const ProductDetail = () => {
               <AddToCartButton onClick={handleAddToCart}>
                 Add to cart
               </AddToCartButton>
-              <BuyNowButton>Buy now</BuyNowButton>
+              <BuyNowButton
+                onClick={() => handleBuyNow(productData._id, quantity)}
+              >
+                Buy now
+              </BuyNowButton>
             </ButtonGroup>
           </RightContainer>
         </RightSection>

@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import updateAtc from "../../apis/updateAtc";
 import { toast } from "react-toastify";
 import deleteAtc from "../../apis/deleteAtc";
+import buyAtc, { type BuyAtcParams } from "../../apis/buyAtc";
 
 interface PurchaseItem {
   _id: string;
@@ -54,11 +55,11 @@ const CartPage = () => {
     }) => updateAtc({ buy_count, product_id }),
     onSuccess: (data) => {
       // Handle success (e.g., show a success message)
-      toast("Add to cart updated successfully");
+      toast.success("Add to cart updated successfully");
     },
     onError: (error) => {
       // Handle error (e.g., show an error message)
-      toast("Error updating cart");
+      toast.error("Error updating cart");
     },
   });
   const handleChange = (value: number, index: number) => {
@@ -124,7 +125,7 @@ const CartPage = () => {
         (item) => !item.isChecked
       );
       setExtendedPurchaseInCart(newPurchaseInCart);
-      toast("Delete item in cart successfully");
+      toast.success("Delete item in cart successfully");
     },
   });
   const handleDeleteItemInCart = (itemIndex: number) => {
@@ -160,6 +161,30 @@ const CartPage = () => {
     });
     return total;
   };
+  const buyAtcMutation = useMutation({
+    mutationFn: (items: BuyAtcParams[]) => {
+      return buyAtc(items);
+    },
+    onSuccess: () => {
+      const newPurchaseInCart = extendedPurchaseInCart.filter(
+        (item) => !item.isChecked
+      );
+      setExtendedPurchaseInCart(newPurchaseInCart);
+      toast.success("Buy items in cart successfully");
+    },
+  });
+  const handleBuyItemsInCart = () => {
+    if (isItemChecked) {
+      const itemsToBuy = extendedPurchaseInCart
+        .filter((item) => item.isChecked)
+        .map((item) => ({
+          product_id: item.product._id as string,
+          buy_count: item.buy_count,
+        }));
+      buyAtcMutation.mutate(itemsToBuy);
+    }
+  };
+
   if (!purchaseInCart) return null;
 
   return (
@@ -260,7 +285,13 @@ const CartPage = () => {
                   )}
                 </TotalPriceContainer>
               </div>
-              <button className="checkout">Checkout</button>
+              <button
+                className="checkout"
+                onClick={handleBuyItemsInCart}
+                disabled={buyAtcMutation.isPending}
+              >
+                Checkout
+              </button>
             </FooterRight>
           </CartFooter>
         </StyledContainer>
