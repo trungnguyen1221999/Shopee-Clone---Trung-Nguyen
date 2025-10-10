@@ -20,6 +20,7 @@ import AddToCart from "../../apis/atc.api";
 import CONST_STATUS from "../../untils/ConstStatus";
 import { toast } from "react-toastify";
 import { AppContext } from "../../context/AppContext";
+import StarRating from "../../components/StarRating/StarRating";
 
 const MAX_VISIBLE_THUMBNAILS = 5;
 
@@ -230,8 +231,16 @@ const ProductDetail = () => {
 
             <StatsRow>
               <Stat>
-                <h3>{productData.rating}</h3>
-                <span>⭐</span>
+                <StarRating rating={productData.rating} size={22} />
+                <span
+                  style={{
+                    marginLeft: "8px",
+                    color: "#555",
+                    fontSize: "1.5rem",
+                  }}
+                >
+                  {productData.rating.toFixed(1)}
+                </span>
               </Stat>
               <Stat>
                 <h3>{soldFormat(productData.sold)}</h3> <span>Sold</span>
