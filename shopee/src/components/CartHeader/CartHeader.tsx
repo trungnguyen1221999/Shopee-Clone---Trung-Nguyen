@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { use } from "react";
+import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import HeaderTopComponent from "../HeaderTop";
 import { CiSearch } from "react-icons/ci";
@@ -7,6 +7,7 @@ import Container from "../Container";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { RegisterSchema } from "../../untils/rules";
+import { searchParam } from "../../untils/searchParams";
 
 const CartHeader = () => {
   const searchProduct = RegisterSchema.pick(["searchProduct"]);
@@ -17,6 +18,8 @@ const CartHeader = () => {
     },
     resolver: yupResolver(searchProduct),
   });
+  const params = searchParam();
+  const navigation = useNavigate();
   const handleNavigate = (data: FormData) => {
     navigation({
       pathname: "/",
@@ -99,6 +102,7 @@ const StyledContainer = styled(Container)`
   form {
     width: 50%;
     .search-container {
+      overflow: hidden;
       border: 2px solid
         ${({ theme }) => theme.colors.primary || "orange"}!important;
     }
@@ -155,7 +159,8 @@ const HeaderBottom = styled.div`
         cursor: pointer;
         transition: opacity 0.2s ease;
         border: none;
-        height: 100%;
+        height: 4rem;
+        width: 8rem;
 
         &:hover {
           opacity: 0.9;
@@ -165,7 +170,7 @@ const HeaderBottom = styled.div`
         }
         svg {
           color: white;
-          font-size: 1.5rem;
+          font-size: 2rem;
         }
       }
     }
