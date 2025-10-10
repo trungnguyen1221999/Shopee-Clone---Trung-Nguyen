@@ -10,6 +10,7 @@ import { AppContext } from "./context/AppContext";
 import PATH_CONST from "./Constant/Path.Const";
 import ProductDetail from "./pages/ProductDetail/ProductDetail";
 import CartPage from "./pages/CartPage/CartPage";
+import CartLayout from "./layout/CartLayOut";
 const useRoutesNav = () => {
   const { isLogin } = useContext(AppContext);
   const protectedRoute = () => {
@@ -52,9 +53,9 @@ const useRoutesNav = () => {
         {
           path: PATH_CONST.CART,
           element: (
-            <MainLayout>
+            <CartLayout>
               <CartPage />
-            </MainLayout>
+            </CartLayout>
           ),
         },
       ],

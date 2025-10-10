@@ -1,14 +1,13 @@
 import styled from "styled-components";
 import Container from "../Container";
-import { IoEarthOutline } from "react-icons/io5";
-import { MdKeyboardArrowDown } from "react-icons/md";
+
 import { CiSearch } from "react-icons/ci";
 import { IoCartOutline } from "react-icons/io5";
 import NavHoverFunction from "../../function/NavHoverFunction";
 import { LogoutApi } from "../../apis/logout.api";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { searchParam } from "../../untils/searchParams";
 import { useForm } from "react-hook-form";
@@ -19,6 +18,7 @@ import CONST_STATUS from "../../untils/ConstStatus";
 import currencyFormat from "../../untils/currencyFormat";
 import PATH_CONST from "../../Constant/Path.Const";
 import { urlFormat } from "../../untils/urlFormat";
+import HeaderTopComponent from "../HeaderTop";
 
 type FormData = Pick<RegisterSchemaType, "searchProduct">;
 
@@ -33,7 +33,7 @@ const Header = () => {
     },
     resolver: yupResolver(searchProduct),
   });
-  const { setIsLogin, profile } = useContext(AppContext);
+  const { setIsLogin } = useContext(AppContext);
   const LogoutMutation = useMutation({
     mutationFn: LogoutApi,
     onSuccess: () => {
@@ -43,9 +43,7 @@ const Header = () => {
       console.log(error);
     },
   });
-  const handleLogout = () => {
-    LogoutMutation.mutate();
-  };
+
   const onSearchSubmit = handleSubmit((data) => {
     console.log(data);
     handleNavigate(data);
@@ -73,41 +71,7 @@ const Header = () => {
     <Wrap>
       <StyledContainer>
         {/* Header Top */}
-        <HeaderTop>
-          <NavHoverFunction
-            reference={
-              <HeaderTopList>
-                <IoEarthOutline />
-                <p>English</p>
-                <MdKeyboardArrowDown />
-              </HeaderTopList>
-            }
-            children={
-              <>
-                <StyledNavInfo>English</StyledNavInfo>
-                <StyledNavInfo>Tiếng Việt</StyledNavInfo>
-              </>
-            }
-          />
-          <NavHoverFunction
-            reference={
-              <HeaderTopList>
-                <img
-                  src="https://png.pngtree.com/png-clipart/20190516/original/pngtree-funny-cat-taking-selfie-couple-of-kitty-with-a-smile-stick-png-image_3776833.jpg"
-                  alt="avatar"
-                />
-                <p>{profile?.email}</p>
-              </HeaderTopList>
-            }
-            children={
-              <>
-                <StyledNavInfo>My Account</StyledNavInfo>
-                <StyledNavInfo>My Purchase</StyledNavInfo>
-                <StyledNavInfo onClick={handleLogout}>Logout</StyledNavInfo>
-              </>
-            }
-          />
-        </HeaderTop>
+        <HeaderTopComponent />
 
         {/* Header Bottom */}
         <HeaderBottom>
@@ -211,38 +175,6 @@ const StyledContainer = styled(Container)`
   flex-direction: column;
   gap: 2rem;
   background-color: transparent !important;
-`;
-
-const HeaderTop = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 2rem;
-`;
-
-const HeaderTopList = styled.div`
-  position: relative;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  p {
-    font-size: 1.5rem;
-  }
-
-  svg {
-    font-size: 2rem;
-  }
-
-  img {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-  }
-
-  &:hover {
-    opacity: 0.9;
-  }
 `;
 
 const HeaderBottom = styled.div`
