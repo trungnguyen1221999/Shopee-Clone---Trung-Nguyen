@@ -144,6 +144,22 @@ const CartPage = () => {
       .map((item) => item._id);
     deleteItemInCartMutation.mutate(purchase_id);
   };
+  const isItemChecked = Boolean(
+    extendedPurchaseInCart.some(
+      (extendedPurchaseInCart) => extendedPurchaseInCart.isChecked
+    )
+  );
+  const savedPrice = () => {
+    let total = 0;
+    extendedPurchaseInCart.forEach((item) => {
+      if (item.isChecked) {
+        total +=
+          (item.product.price_before_discount - item.product.price) *
+          item.buy_count;
+      }
+    });
+    return total;
+  };
   if (!purchaseInCart) return null;
 
   return (
@@ -233,9 +249,16 @@ const CartPage = () => {
               </button>
             </FooterLeft>
             <FooterRight>
-              <div>
+              <div className="total">
                 Total ({totalCheck()}) item{" "}
-                <span>{currencyFormat(totalPrice())}₫</span>
+                <TotalPriceContainer>
+                  <span>{currencyFormat(totalPrice())}₫</span>
+                  {isItemChecked && (
+                    <span className="save">
+                      Save {currencyFormat(savedPrice())} ₫
+                    </span>
+                  )}
+                </TotalPriceContainer>
               </div>
               <button className="checkout">Checkout</button>
             </FooterRight>
@@ -440,5 +463,20 @@ const FooterRight = styled.div`
       opacity: 0.9;
       transform: translateY(-2px);
     }
+  }
+  .total {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+`;
+
+const TotalPriceContainer = styled.span`
+  display: flex;
+  flex-direction: column;
+  .save {
+    font-size: 1.4rem;
+    color: #868686;
+    font-weight: normal;
   }
 `;
