@@ -12,6 +12,14 @@ import deleteAtc from "../../apis/deleteAtc";
 import buyAtc, { type BuyAtcParams } from "../../apis/buyAtc";
 import { Link } from "react-router-dom";
 import { urlFormat } from "../../untils/urlFormat";
+import { getProductList } from "../../apis/productList.api";
+import ProductCart from "../../components/ProductCard/ProductCart";
+import type { productType } from "../../types/product.type";
+import {
+  RelatedGrid,
+  RelatedSection,
+  RelatedTitle,
+} from "../ProductDetail/ProductDetail";
 
 interface PurchaseItem {
   _id: string;
@@ -186,7 +194,16 @@ const CartPage = () => {
       buyAtcMutation.mutate(itemsToBuy);
     }
   };
-
+  const { data } = useQuery({
+    queryKey: ["productList"],
+    queryFn: () =>
+      getProductList({
+        page: 1,
+        limit: 24,
+        sort_by: "sold",
+      }),
+  });
+  console.log(data);
   if (!purchaseInCart) return null;
 
   return (
@@ -300,6 +317,27 @@ const CartPage = () => {
           </CartFooter>
         </StyledContainer>
       </CartFooterWrapper>
+      <StyledContainer>
+        {data && (
+          <RelatedSection>
+            <RelatedTitle>You May Also Like</RelatedTitle>
+            <RelatedGrid>
+              {data.products.map((product: productType["data"]) => (
+                <ProductCart
+                  key={product._id}
+                  productId={product._id}
+                  productImg={product.images[0]}
+                  productName={product.name}
+                  productPrice={product.price}
+                  productPriceBeforeDiscount={product.price_before_discount}
+                  productRating={product.rating}
+                  productSold={product.sold}
+                />
+              ))}
+            </RelatedGrid>
+          </RelatedSection>
+        )}
+      </StyledContainer>
     </Wrap>
   );
 };

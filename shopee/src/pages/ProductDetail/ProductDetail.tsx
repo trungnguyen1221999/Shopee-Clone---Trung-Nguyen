@@ -564,11 +564,11 @@ const BuyNowButton = styled.button`
   }
 `;
 // ============= YOU MAY ALSO LIKE SECTION =============
-const RelatedSection = styled.div`
+export const RelatedSection = styled.div`
   margin-top: 6rem;
 `;
 
-const RelatedTitle = styled.h2`
+export const RelatedTitle = styled.h2`
   font-size: 2.4rem;
   font-weight: 600;
   margin-bottom: 2rem;
@@ -589,7 +589,7 @@ const RelatedTitle = styled.h2`
   }
 `;
 
-const RelatedGrid = styled(ProductGrid)`
+export const RelatedGrid = styled(ProductGrid)`
   margin-top: 3rem;
   gap: 2rem;
   justify-items: center;
