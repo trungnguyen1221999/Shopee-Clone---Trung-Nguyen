@@ -10,6 +10,8 @@ import updateAtc from "../../apis/updateAtc";
 import { toast } from "react-toastify";
 import deleteAtc from "../../apis/deleteAtc";
 import buyAtc, { type BuyAtcParams } from "../../apis/buyAtc";
+import { Link } from "react-router-dom";
+import { urlFormat } from "../../untils/urlFormat";
 
 interface PurchaseItem {
   _id: string;
@@ -216,10 +218,12 @@ const CartPage = () => {
                   onChange={() => handleCheck(index)}
                   checked={item.isChecked}
                 />
-                <ProductInfo>
-                  <img src={item.product.image} alt={item.product.name} />
-                  <p>{item.product.name}</p>
-                </ProductInfo>
+                <Link to={`/${urlFormat(item.product.name, item.product._id)}`}>
+                  <ProductInfo>
+                    <img src={item.product.image} alt={item.product.name} />
+                    <p>{item.product.name}</p>
+                  </ProductInfo>
+                </Link>
               </ProductCell>
 
               <UnitPriceCell>
