@@ -41,7 +41,6 @@ const ProductDetail = () => {
     queryFn: () => getProduct(productId as string),
     enabled: !!productId,
   });
-  console.log("Product Data:", productData);
   const { data: categoriesData } = useQuery({
     queryKey: ["category"],
     queryFn: () => getCategory(),
@@ -183,7 +182,7 @@ const ProductDetail = () => {
         buy_count: quantity,
       });
       toast.success("Item added to cart successfully!");
-      navgigate("/cart");
+      navgigate("/cart", { state: { purchase_id: productId } });
     } catch (error) {
       toast.error("Failed to add item to cart. Please try again.");
     }

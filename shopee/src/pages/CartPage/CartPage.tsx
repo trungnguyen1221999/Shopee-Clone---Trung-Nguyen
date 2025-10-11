@@ -10,7 +10,7 @@ import updateAtc from "../../apis/updateAtc";
 import { toast } from "react-toastify";
 import deleteAtc from "../../apis/deleteAtc";
 import buyAtc, { type BuyAtcParams } from "../../apis/buyAtc";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { urlFormat } from "../../untils/urlFormat";
 import { getProductList } from "../../apis/productList.api";
 import ProductCart from "../../components/ProductCard/ProductCart";
@@ -38,7 +38,8 @@ const CartPage = () => {
     queryKey: ["purchase", { status: CONST_STATUS.addToCart }],
     queryFn: () => readPurchase(CONST_STATUS.addToCart),
   });
-
+  const location = useLocation();
+  const choosenPurId = location.state?.purchase_id || 0;
   // ✅ Fix: đảm bảo data luôn là mảng (vì API có thể trả về { data: [...] })
   useEffect(() => {
     const data = Array.isArray(purchaseInCart)
@@ -49,12 +50,15 @@ const CartPage = () => {
       setExtendedPurchaseInCart(
         data.map((item: any) => ({
           ...item,
-          isChecked: false,
+
           isDisabled: false,
+          isChecked: choosenPurId === item.product._id ? true : false,
         })) as PurchaseItem[]
       );
+      history.replaceState(choosenPurId, "");
     }
-  }, [purchaseInCart]);
+  }, [purchaseInCart, choosenPurId]);
+
   const updateQuantityMutaion = useMutation({
     mutationFn: ({
       buy_count,
@@ -203,7 +207,7 @@ const CartPage = () => {
         sort_by: "sold",
       }),
   });
-  console.log(data);
+
   if (!purchaseInCart) return null;
 
   return (
