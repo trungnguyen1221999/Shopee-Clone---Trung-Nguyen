@@ -6,6 +6,8 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { AppContext } from "../context/AppContext";
 import { useMutation } from "@tanstack/react-query";
 import { LogoutApi } from "../apis/logout.api";
+import { Link } from "react-router-dom";
+import PATH_CONST from "../Constant/Path.Const";
 
 const HeaderTopComponent = () => {
   const { setIsLogin, profile } = useContext(AppContext);
@@ -50,8 +52,8 @@ const HeaderTopComponent = () => {
         }
         children={
           <>
-            <StyledNavInfo>My Account</StyledNavInfo>
-            <StyledNavInfo>My Purchase</StyledNavInfo>
+            <StyledNavInfo to={PATH_CONST.PROFILE}>My Account</StyledNavInfo>
+            <StyledNavInfo to={PATH_CONST.PURCHASE}>My Purchase</StyledNavInfo>
             <StyledNavInfo onClick={handleLogout}>Logout</StyledNavInfo>
           </>
         }
@@ -93,7 +95,7 @@ const HeaderTopList = styled.div`
   }
 `;
 
-const StyledNavInfo = styled.p`
+const StyledNavInfo = styled(Link)`
   font-size: 1.4rem;
   padding: 0.5rem 0;
   cursor: pointer;

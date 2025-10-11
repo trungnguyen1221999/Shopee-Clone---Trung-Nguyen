@@ -11,6 +11,9 @@ import PATH_CONST from "./Constant/Path.Const";
 import ProductDetail from "./pages/ProductDetail/ProductDetail";
 import CartPage from "./pages/CartPage/CartPage";
 import CartLayout from "./layout/CartLayOut";
+import UserLayout from "./layout/UserLayout";
+import ChangePassword from "./pages/User/pages/ChangePassword/ChangePassword";
+import OrderHistory from "./pages/User/pages/OrderHistory/OrderHistory";
 const useRoutesNav = () => {
   const { isLogin } = useContext(AppContext);
   const protectedRoute = () => {
@@ -35,13 +38,28 @@ const useRoutesNav = () => {
           ),
         },
         {
-          path: PATH_CONST.PROFILE,
-          element: (
-            <MainLayout>
-              <Profile />
-            </MainLayout>
-          ),
+          path: PATH_CONST.USER,
+          element: <UserLayout />,
+          children: [
+            {
+              path: PATH_CONST.PROFILE,
+              element: <Profile />,
+            },
+            {
+              path: PATH_CONST.PROFILE,
+              element: <Profile />,
+            },
+            {
+              path: PATH_CONST.CHANGE_PASSWORD,
+              element: <ChangePassword />,
+            },
+            {
+              path: PATH_CONST.PURCHASE,
+              element: <OrderHistory />,
+            },
+          ],
         },
+
         {
           path: PATH_CONST.PRODUCT,
           element: (

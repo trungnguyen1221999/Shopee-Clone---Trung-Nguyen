@@ -5,7 +5,10 @@ const PATH_CONST = {
   CHECKOUT: "/checkout",
   LOGIN: "/login",
   REGISTER: "/register",
-  PROFILE: "/profile",
+  PROFILE: "/user/profile",
   LOGOUT: "/logout",
+  PURCHASE: "/user/purchase",
+  CHANGE_PASSWORD: "/user/password",
+  USER: "/user",
 };
 export default PATH_CONST;
