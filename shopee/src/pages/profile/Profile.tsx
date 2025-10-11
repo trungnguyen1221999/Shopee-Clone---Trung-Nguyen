@@ -46,7 +46,10 @@ const Profile = () => {
               </select>
             </DateForm>
           </BirthDayContainer>
-          <button>Save</button>
+          <ButtonCotainer>
+            <div></div>
+            <button>Save</button>
+          </ButtonCotainer>
         </Form>
 
         <AvatarSection>
@@ -218,4 +221,11 @@ const DateForm = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr) !important;
   gap: 1rem;
+`;
+const ButtonCotainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  div {
+    width: 20%;
+  }
 `;
