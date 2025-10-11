@@ -34,4 +34,5 @@ const Left = styled.div`
 
 const Right = styled.div`
   flex: 7; /* Chiếm 7 phần */
+  margin-top: 2rem;
 `;
