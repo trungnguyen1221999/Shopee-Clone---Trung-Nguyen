@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import readPurchase from "../../apis/readPurchase.api";
 import CONST_STATUS from "../../untils/ConstStatus";
 import currencyFormat from "../../untils/currencyFormat";
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import updateAtc from "../../apis/updateAtc";
 import { toast } from "react-toastify";
 import deleteAtc from "../../apis/deleteAtc";
@@ -20,20 +20,11 @@ import {
   RelatedSection,
   RelatedTitle,
 } from "../ProductDetail/ProductDetail";
-
-interface PurchaseItem {
-  _id: string;
-  product: any;
-  buy_count: number;
-  isChecked: boolean;
-  isDisabled: boolean;
-}
+import { AppContext } from "../../context/AppContext";
 
 const CartPage = () => {
-  const [extendedPurchaseInCart, setExtendedPurchaseInCart] = useState<
-    PurchaseItem[]
-  >([]);
-
+  const { extendedPurchaseInCart, setExtendedPurchaseInCart } =
+    useContext(AppContext);
   const { data: purchaseInCart } = useQuery({
     queryKey: ["purchase", { status: CONST_STATUS.addToCart }],
     queryFn: () => readPurchase(CONST_STATUS.addToCart),
