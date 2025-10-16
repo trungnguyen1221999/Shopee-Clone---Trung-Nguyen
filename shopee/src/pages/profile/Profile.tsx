@@ -1,4 +1,3 @@
-import React from "react";
 import { FaRegUser } from "react-icons/fa6";
 import styled from "styled-components";
 
