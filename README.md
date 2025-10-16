@@ -1,4 +1,4 @@
-# 🛒 Shopee Clone Project (TypeScript)
+# 🛒 Shopee Clone Project (TypeScript) FullStack
 Live preview: https://beamish-starburst-a58fa3.netlify.app/
 ## 🔑 Features
 
@@ -44,5 +44,7 @@ Managed using JWT:
 - 📝 **Form Management:** React Hook Form
 - 🌐 **Router:** React Router
 - 🏗️ **Build Tool:** Vite
-- 🔌 **API:** REST API 
+- 🔌 **API:** REST API
+- NodeJs
+- MongoBD
 
