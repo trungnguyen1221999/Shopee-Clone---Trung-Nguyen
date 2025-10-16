@@ -1,5 +1,5 @@
 # 🛒 Shopee Clone Project (TypeScript)
-
+Live preview: https://beamish-starburst-a58fa3.netlify.app/
 ## 🔑 Features
 
 ### 🛂 Authentication Module
@@ -44,8 +44,5 @@ Managed using JWT:
 - 📝 **Form Management:** React Hook Form
 - 🌐 **Router:** React Router
 - 🏗️ **Build Tool:** Vite
-- 🔌 **API:** REST API (provided server)
-- 🌍 **Internationalization:** react-i18next
-- 🔎 **SEO:** React Helmet
-- 📦 **Component Modeling:** Storybook
-- ✅ **Unit Testing**
+- 🔌 **API:** REST API 
+
