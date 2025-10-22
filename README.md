@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="https://i.imgur.com/UdfewJD.png" alt="" width="200"/>
+  <img src="https://i.imgur.com/UdfewJD.png" alt="" width="1000"/>
+    <img src="https://i.imgur.com/UdfewJD.png" alt="" width="1000"/>
+
+  <img src="https://i.imgur.com/UdfewJD.png" alt="" width="1000"/>
+
 </p>
 # 🛒 Shopee Clone Project (TypeScript) FullStack
 Live preview: https://beamish-starburst-a58fa3.netlify.app/
