@@ -11,7 +11,11 @@ import { toast } from "react-toastify";
 import { AppContext } from "../../context/AppContext";
 import { useContext } from "react";
 import PATH_CONST from "../../Constant/Path.Const";
-type LoginFormProps = LoginSchemaType;
+
+type LoginFormProps = {
+  email: string;
+  password: string;
+};
 
 const LoginForm = () => {
   const { setIsLogin, setProfile } = useContext(AppContext);
@@ -21,17 +25,23 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm<LoginFormProps>({ resolver: yupResolver(LoginSchema) });
-
-  const loginMutation = useMutation({
-    mutationFn: (data: Omit<LoginFormProps, "confirmPassword">) => {
-      return LoginApi(data);
+  } = useForm({
+    resolver: yupResolver(LoginSchema) as any,
+    defaultValues: {
+      email: "abcd12345@gmail.com",
+      password: "Aa123456789$$$",
     },
   });
-  const onSubmit = handleSubmit((data: LoginFormProps) => {
+
+  const loginMutation = useMutation({
+    mutationFn: (data: LoginSchemaType) => {
+      return LoginApi(data as { email: string; password: string });
+    },
+  });
+  const onSubmit = handleSubmit((data: LoginSchemaType) => {
     const body = omit(data, ["confirmation_password"]);
     loginMutation.mutate(
-      body as Omit<LoginFormProps, "confirmation_password">,
+      body as LoginSchemaType,
       {
         onSuccess: (data) => {
           console.log(data);
@@ -41,11 +51,11 @@ const LoginForm = () => {
           setProfile(data?.user || null);
         },
         onError: (error) => {
-          const axiosError = error as { response?: { data?: any } };
+          const axiosError = error as { response?: { data?: any; status?: number } };
           const errorForm = axiosError.response?.data?.data;
           if (axiosError.response?.status === 422 && errorForm) {
             Object.keys(errorForm).forEach((key) => {
-              setError(key as keyof LoginFormProps, {
+              setError(key as keyof LoginSchemaType, {
                 message: errorForm[key as keyof typeof errorForm],
               });
             });

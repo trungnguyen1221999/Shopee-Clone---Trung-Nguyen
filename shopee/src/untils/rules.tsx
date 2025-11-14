@@ -117,7 +117,23 @@ export const RegisterSchema = yup.object({
 
 export type RegisterSchemaType = yup.InferType<typeof RegisterSchema>;
 
-export const LoginSchema = RegisterSchema.omit(["confirmation_password"]);
-export type LoginSchemaType = yup.InferType<typeof RegisterSchema>;
+export const LoginSchema = yup.object({
+  email: yup
+    .string()
+    .required("Email is required")
+    .min(8, "Email must be at least 8 characters and max 100 characters")
+    .max(100, "Email must be at least 8 characters and max 100 characters")
+    .email("Invalid email address"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters and max 30 characters")
+    .max(30, "Password must be at least 8 characters and max 30 characters")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-[\]{};':"\\|,.<>/?]).+$/,
+      "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character"
+    ),
+});
+export type LoginSchemaType = yup.InferType<typeof LoginSchema>;
 export const PriceSchema = RegisterSchema.pick(["price_min", "price_max"]);
 export type PriceSchemaType = yup.InferType<typeof PriceSchema>;
