@@ -7,6 +7,7 @@
 </p>
 # 🛒 Shopee Clone Project (TypeScript) FullStack
 Live preview: https://beamish-starburst-a58fa3.netlify.app/
+Backend: https://api-ecom.duthanhduoc.com
 ## 🔑 Features
 
 ### 🛂 Authentication Module
