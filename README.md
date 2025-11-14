@@ -6,7 +6,7 @@
 <img src="https://i.imgur.com/molkbWD.png" alt="" width="1000"/>
 </p>
 # 🛒 Shopee Clone Project (TypeScript) FullStack
-Live preview: https://beamish-starburst-a58fa3.netlify.app/
+Live preview: https://shopeefullstack.netlify.app/login
 Backend: https://api-ecom.duthanhduoc.com
 ## 🔑 Features
 
